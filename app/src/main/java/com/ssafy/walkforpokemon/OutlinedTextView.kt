@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
 
+
 class OutLineTextView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
@@ -21,6 +22,7 @@ class OutLineTextView @JvmOverloads constructor(
         val typedArray = context.obtainStyledAttributes(attrs, R.styleable.OutLineTextView)
         strokeWidthVal = typedArray.getFloat(R.styleable.OutLineTextView_textStrokeWidth, 3f)
         strokeColor = typedArray.getColor(R.styleable.OutLineTextView_textStrokeColor, Color.WHITE)
+        typedArray.recycle()
     }
 
     override fun onDraw(canvas: Canvas) {
