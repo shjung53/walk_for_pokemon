@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
 import com.navercorp.nid.NaverIdLoginSDK
 import com.navercorp.nid.oauth.OAuthLoginCallback
 import com.ssafy.walkforpokemon.databinding.ActivityLoginBinding
@@ -35,6 +36,8 @@ class LoginActivity : AppCompatActivity() {
                 onFailure(errorCode, message)
             }
         }
+
+        Glide.with(this).load(R.raw.charmander).into(binding.actionImage);
 
 
         binding.naverLoginButton.setOnClickListener {

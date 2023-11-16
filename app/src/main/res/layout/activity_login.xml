@@ -7,6 +7,7 @@
     tools:context=".SplashActivity">
 
     <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:id="@+id/action_image"
         android:layout_width="300dp"
         android:layout_height="300dp"
         android:layout_marginEnd="20dp"

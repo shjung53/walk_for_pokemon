@@ -65,5 +65,9 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_gson_version"
     implementation 'com.squareup.okhttp3:logging-interceptor:4.9.3'
 
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+
     implementation 'com.navercorp.nid:oauth:5.8.0'
+
 }
