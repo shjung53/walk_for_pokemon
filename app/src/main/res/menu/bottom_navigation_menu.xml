@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/draw"
+        android:icon="@drawable/monster_ball_200"
+        android:title="뽑기"
+        app:showAsAction="always"></item>
+    <item
+        android:id="@+id/home"
+        android:icon="@drawable/house_192"
+        android:title="홈"
+        app:showAsAction="always"></item>
+    <item
+        android:id="@+id/dictioniary"
+        android:icon="@drawable/dictionary_240"
+        android:title="도감"
+        app:showAsAction="always"></item>
+</menu>
