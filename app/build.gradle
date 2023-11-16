@@ -3,6 +3,9 @@ plugins {
     id 'org.jetbrains.kotlin.android'
 }
 
+def properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
 android {
     namespace 'com.ssafy.walkforpokemon'
     compileSdk 34
@@ -18,6 +21,10 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField "String", "NAVER_LOGIN_CLIENT_ID", "\"" + properties["NAVER_LOGIN_CLIENT_ID"] + "\""
+            buildConfigField "String", "NAVER_LOGIN_CLIENT_SECRET", "\"" + properties["NAVER_LOGIN_CLIENT_SECRET"] + "\""
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -30,8 +37,10 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
-    viewBinding{
-        enabled=true
+
+    buildFeatures {
+        viewBinding = true
+        buildConfig = true
     }
 }
 
@@ -55,4 +64,6 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:$retrofit_gson_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_gson_version"
     implementation 'com.squareup.okhttp3:logging-interceptor:4.9.3'
+
+    implementation 'com.navercorp.nid:oauth:5.8.0'
 }
