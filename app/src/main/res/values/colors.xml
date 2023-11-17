@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="transparent">#00000000</color>
     <color name="pokemon_blue">#2A75BB</color>
+    <color name="draw_background">#FFA9A8AC</color>
 </resources>

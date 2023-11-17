@@ -6,6 +6,16 @@
     app:startDestination="@id/home">
 
     <fragment
+        android:id="@+id/draw"
+        android:name="com.ssafy.walkforpokemon.DrawDialog"
+        android:label="fragment_bottom0"
+        tools:layout="@layout/dialog_draw">
+        <action
+            android:id="@+id/draw_pokemon_dialog_action"
+            />
+
+    </fragment>
+    <fragment
         android:id="@+id/home"
         android:name="com.ssafy.walkforpokemon.HomeFragment"
         android:label="fragment_bottom1"
