@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "535049774080",
+    "project_id": "ssafy-final-pennant",
+    "storage_bucket": "ssafy-final-pennant.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:535049774080:android:9179a40f1df5d335d1a4e5",
+        "android_client_info": {
+          "package_name": "com.ssafy.fptemp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCiLS8Vjra4S6i9gzuC4Jo6x7QTpD_mEhI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:535049774080:android:5d72b9d48871a421d1a4e5",
+        "android_client_info": {
+          "package_name": "com.ssafy.walkforpokemon"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCiLS8Vjra4S6i9gzuC4Jo6x7QTpD_mEhI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

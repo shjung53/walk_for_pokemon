@@ -1,32 +1,41 @@
 package com.ssafy.walkforpokemon
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.GridLayoutManager
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import com.ssafy.walkforpokemon.adapter.DictionaryAdapter
+import com.ssafy.walkforpokemon.databinding.FragmentDictionaryBinding
+import com.ssafy.walkforpokemon.dto.Pokemon
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [DictionaryFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
+private const val TAG = "DictionaryFragment_싸피"
+
 class DictionaryFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+
+    // This property is only valid between onCreateView and
+    // onDestroyView.
+    private lateinit var _binding: FragmentDictionaryBinding
+
+    private val binding get() = _binding!!
+
+
+    private var pokeDataList = mutableListOf<Pokemon>()
+
+    private lateinit var dictionaryAdapter: DictionaryAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
     }
 
     override fun onCreateView(
@@ -34,26 +43,72 @@ class DictionaryFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_dictionary, container, false)
+
+        _binding = FragmentDictionaryBinding.inflate(layoutInflater)
+
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val db = Firebase.firestore
+
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+
+                db.collection("pokemon")
+                    .get()
+                    .addOnSuccessListener { result ->
+                        for (document in result) {
+                            pokeDataList.add(
+                                Pokemon(
+                                    id = document.data.get("id").toString().toInt(),
+                                    name = document.data.get("name") as String,
+                                    nameKorean = document.data.get("nameKorean") as String,
+                                    imageOfficial = document.data.get("imageOfficial") as String,
+                                    image3D = document.data.get("image3D") as String,
+                                    isLegendary = document.data.get("isLegendary") as Boolean,
+                                    isMythical = document.data.get("isMythical") as Boolean,
+                                    percentage = document.data.get("percentage") as Double,
+                                    type = document.data.get("type") as List<String>
+                                )
+                            )
+                            Log.d(
+                                TAG,
+                                "onViewCreated: ${document.id} => ${pokeDataList.size} , ${pokeDataList[pokeDataList.size - 1]}"
+                            )
+
+                        }
+                    }
+                    .addOnFailureListener {
+                        Log.w(TAG, "onViewCreated: ", it)
+                    }.await()
+
+                withContext(Dispatchers.Main) {
+                    pokeDataList.sortBy { it.id }
+                    Log.d(TAG, "my first : ${pokeDataList[0]} , ${pokeDataList.size}")
+
+                    dictionaryAdapter = DictionaryAdapter(requireContext(), pokeDataList)
+                    dictionaryAdapter.notifyDataSetChanged()
+
+                    binding.recyclerview.adapter = dictionaryAdapter
+                    binding.recyclerview.layoutManager = GridLayoutManager(requireContext(), 3)
+
+                }
+            } catch (e: Exception) {
+                Log.d(TAG, "onViewCreated: 통신 에러.... ${e}")
+            }
+        }
+
+
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment DictionaryFragment.
-         */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
             DictionaryFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+
             }
     }
 }

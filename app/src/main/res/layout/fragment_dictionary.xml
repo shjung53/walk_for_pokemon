@@ -5,10 +5,11 @@
     android:layout_height="match_parent"
     tools:context=".DictionaryFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="dictionary" />
+        tools:listitem="@layout/dictionary_item_view"
+        />
 
 </FrameLayout>
