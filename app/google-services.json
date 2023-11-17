@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "57075546142",
+    "project_id": "walk-405401",
+    "storage_bucket": "walk-405401.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:57075546142:android:9779071c8d99cde127560f",
+        "android_client_info": {
+          "package_name": "com.ssafy.walkforpokemon"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfuqbFN5BQXL1vTEEW7WU5ce-SWHBOYFQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
