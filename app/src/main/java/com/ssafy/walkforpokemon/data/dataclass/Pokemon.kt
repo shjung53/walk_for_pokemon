@@ -1,4 +1,4 @@
-package com.ssafy.walkforpokemon.dto
+package com.ssafy.walkforpokemon.data.dataclass
 
 data class Pokemon (
     val id : Int,

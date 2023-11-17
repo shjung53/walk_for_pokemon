@@ -11,7 +11,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.ssafy.walkforpokemon.adapter.DictionaryAdapter
 import com.ssafy.walkforpokemon.databinding.FragmentDictionaryBinding
-import com.ssafy.walkforpokemon.dto.Pokemon
+import com.ssafy.walkforpokemon.data.dataclass.Pokemon
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -56,7 +56,6 @@ class DictionaryFragment : Fragment() {
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
-
                 db.collection("pokemon")
                     .get()
                     .addOnSuccessListener { result ->
@@ -108,7 +107,6 @@ class DictionaryFragment : Fragment() {
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
             DictionaryFragment().apply {
-
             }
     }
 }

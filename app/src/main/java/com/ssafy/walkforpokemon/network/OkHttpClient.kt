@@ -5,7 +5,7 @@ import okhttp3.OkHttpClient
 
 object OkHttpClient {
     private val logger = HttpLoggingInterceptor().apply {
-        level = HttpLoggingInterceptor.Level.BASIC
+        level = HttpLoggingInterceptor.Level.HEADERS
     }
 
     val client = OkHttpClient

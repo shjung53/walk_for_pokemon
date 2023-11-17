@@ -1,4 +1,4 @@
-package com.ssafy.walkforpokemon
+package com.ssafy.walkforpokemon.viewmodels
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -10,7 +10,7 @@ import com.google.android.gms.fitness.HistoryClient
 import com.ssafy.walkforpokemon.data.datasource.HealthDataSource
 import com.ssafy.walkforpokemon.data.repository.HealthRepository
 
-class MainViewModel(private val healthRepository: HealthRepository) : ViewModel() {
+class HealthViewModel(private val healthRepository: HealthRepository) : ViewModel() {
 
     fun initHealthClient(healthClient: HistoryClient) {
         healthRepository.initializeClient(healthClient)
@@ -24,7 +24,7 @@ class MainViewModel(private val healthRepository: HealthRepository) : ViewModel(
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
-                MainViewModel(
+                HealthViewModel(
                     healthRepository = HealthRepository(
                         healthDataSource = HealthDataSource(
                         ),
