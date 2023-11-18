@@ -7,5 +7,5 @@ data class User(
     val currentMileage: Int = 0,
     val addedMileage: Int = 0,
     val myPokemons: List<Int> = listOf(),
-    val mainPokemon: Int = 0
+    val mainPokemon: Int = 0,
 )

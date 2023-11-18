@@ -1,6 +1,6 @@
 package com.ssafy.walkforpokemon.data.dataclass
 
-data class Pokemon(
+data class PokemonResponse(
     val id: Int = 0,
     val name: String = "",
     val nameKorean: String = "",
@@ -10,6 +10,4 @@ data class Pokemon(
     val isMythical: Boolean = false,
     val percentage: Double = 0.0,
     val type: List<String> = listOf(),
-    val isActive: Boolean = false,
-    val isMain: Boolean = false
 )

@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -14,22 +13,20 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.fitness.Fitness
 import com.google.android.gms.fitness.FitnessOptions
 import com.google.android.gms.fitness.data.DataType
-import com.navercorp.nid.NaverIdLoginSDK
-import com.navercorp.nid.oauth.NidOAuthLoginState
 import com.ssafy.walkforpokemon.databinding.ActivityMainBinding
-import com.ssafy.walkforpokemon.viewmodels.HealthViewModel
-import com.ssafy.walkforpokemon.viewmodels.UserViewModel
+import com.ssafy.walkforpokemon.viewmodels.MainViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var fitnessOptions: FitnessOptions
-    private val healthViewModel: HealthViewModel by viewModels { HealthViewModel.Factory }
-    private val userViewModel: UserViewModel by viewModels { UserViewModel.Factory}
+    private val mainViewModel: MainViewModel by viewModels()
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,7 +41,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        userViewModel.fetchUser()
+        mainViewModel.fetchUser()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -100,6 +97,6 @@ class MainActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun accessGoogleFit() {
         val account = GoogleSignIn.getAccountForExtension(this, fitnessOptions)
-        healthViewModel.initHealthClient(Fitness.getHistoryClient(this, account))
+        mainViewModel.initHealthClient(Fitness.getHistoryClient(this, account))
     }
 }

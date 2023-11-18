@@ -10,8 +10,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.ssafy.walkforpokemon.adapter.DictionaryAdapter
+import com.ssafy.walkforpokemon.data.dataclass.PokemonResponse
 import com.ssafy.walkforpokemon.databinding.FragmentDictionaryBinding
-import com.ssafy.walkforpokemon.data.dataclass.Pokemon
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -19,18 +20,19 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
 
-private const val TAG = "DictionaryFragment_싸피"
+private const val TAG = "DictionaryFragment"
 
+@AndroidEntryPoint
 class DictionaryFragment : Fragment() {
 
     // This property is only valid between onCreateView and
     // onDestroyView.
-    private lateinit var _binding: FragmentDictionaryBinding
+    private var _binding: FragmentDictionaryBinding? = null
 
     private val binding get() = _binding!!
 
 
-    private var pokeDataList = mutableListOf<Pokemon>()
+    private var pokeDataList = mutableListOf<PokemonResponse>()
 
     private lateinit var dictionaryAdapter: DictionaryAdapter
 
@@ -40,8 +42,8 @@ class DictionaryFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+        savedInstanceState: Bundle?,
+    ): View {
         // Inflate the layout for this fragment
 
         _binding = FragmentDictionaryBinding.inflate(layoutInflater)
@@ -61,7 +63,7 @@ class DictionaryFragment : Fragment() {
                     .addOnSuccessListener { result ->
                         for (document in result) {
                             pokeDataList.add(
-                                Pokemon(
+                                PokemonResponse(
                                     id = document.data.get("id").toString().toInt(),
                                     name = document.data.get("name") as String,
                                     nameKorean = document.data.get("nameKorean") as String,
@@ -103,10 +105,14 @@ class DictionaryFragment : Fragment() {
 
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     companion object {
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            DictionaryFragment().apply {
-            }
+        fun newInstance() =
+            DictionaryFragment()
     }
 }

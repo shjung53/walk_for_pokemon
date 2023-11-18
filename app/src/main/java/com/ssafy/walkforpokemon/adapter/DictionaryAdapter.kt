@@ -9,9 +9,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.ssafy.walkforpokemon.R
-import com.ssafy.walkforpokemon.data.dataclass.Pokemon
+import com.ssafy.walkforpokemon.data.dataclass.PokemonResponse
 
-class DictionaryAdapter(val context: Context, val itemList: List<Pokemon>) :
+class DictionaryAdapter(val context: Context, val itemList: List<PokemonResponse>) :
     RecyclerView.Adapter<DictionaryAdapter.DictionaryViewHolder>() {
 
     inner class DictionaryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
