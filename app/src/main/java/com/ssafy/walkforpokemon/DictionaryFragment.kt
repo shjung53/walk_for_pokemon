@@ -19,7 +19,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
-
 private const val TAG = "DictionaryFragment"
 
 @AndroidEntryPoint
@@ -31,7 +30,6 @@ class DictionaryFragment : Fragment() {
 
     private val binding get() = _binding!!
 
-
     private var pokeDataList = mutableListOf<PokemonResponse>()
 
     private lateinit var dictionaryAdapter: DictionaryAdapter
@@ -41,7 +39,8 @@ class DictionaryFragment : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
         // Inflate the layout for this fragment
@@ -72,14 +71,9 @@ class DictionaryFragment : Fragment() {
                                     isLegendary = document.data.get("isLegendary") as Boolean,
                                     isMythical = document.data.get("isMythical") as Boolean,
                                     percentage = document.data.get("percentage") as Double,
-                                    type = document.data.get("type") as List<String>
-                                )
+                                    type = document.data.get("type") as List<String>,
+                                ),
                             )
-                            Log.d(
-                                TAG,
-                                "onViewCreated: ${document.id} => ${pokeDataList.size} , ${pokeDataList[pokeDataList.size - 1]}"
-                            )
-
                         }
                     }
                     .addOnFailureListener {
@@ -95,14 +89,11 @@ class DictionaryFragment : Fragment() {
 
                     binding.recyclerview.adapter = dictionaryAdapter
                     binding.recyclerview.layoutManager = GridLayoutManager(requireContext(), 3)
-
                 }
             } catch (e: Exception) {
-                Log.d(TAG, "onViewCreated: 통신 에러.... ${e}")
+                Log.d(TAG, "onViewCreated: 통신 에러.... $e")
             }
         }
-
-
     }
 
     override fun onDestroyView() {

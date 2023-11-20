@@ -32,7 +32,7 @@ class UserDataSource @Inject constructor() {
                     val errorDescription = NaverIdLoginSDK.getLastErrorDescription()
                     Log.d(
                         TAG,
-                        "onFailure() called with: httpStatus = $httpStatus, message = $message"
+                        "onFailure() called with: httpStatus = $httpStatus, message = $message",
                     )
                     continuation.resume(
                         Result.failure(
@@ -104,14 +104,14 @@ class UserDataSource @Inject constructor() {
                     continuation.resume(
                         Result.failure(
                             Exception(
-                                errorDescription ?: "unknown error"
-                            )
-                        ), null
+                                errorDescription ?: "unknown error",
+                            ),
+                        ),
+                        null,
                     )
                     Log.d(TAG, "registerUser() called with: e = $e")
                 }
         }
         return result
     }
-
 }

@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity() {
                 this, // your activity
                 8888, // e.g. 1
                 account,
-                fitnessOptions
+                fitnessOptions,
             )
         } else {
             accessGoogleFit()

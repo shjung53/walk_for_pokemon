@@ -11,5 +11,5 @@ data class Pokemon(
     val percentage: Double = 0.0,
     val type: List<String> = listOf(),
     val isActive: Boolean = false,
-    val isMain: Boolean = false
+    val isMain: Boolean = false,
 )

@@ -77,7 +77,7 @@ class CustomDialog(private val context: Context, private val binding: DialogDraw
                         e: GlideException?,
                         model: Any?,
                         target: Target<Drawable>?,
-                        isFirstResource: Boolean
+                        isFirstResource: Boolean,
                     ): Boolean {
                         return false
                     }
@@ -87,7 +87,7 @@ class CustomDialog(private val context: Context, private val binding: DialogDraw
                         model: Any?,
                         target: Target<Drawable>?,
                         dataSource: DataSource?,
-                        isFirstResource: Boolean
+                        isFirstResource: Boolean,
                     ): Boolean {
                         (resource as GifDrawable).setLoopCount(0)
                         resource.registerAnimationCallback(object : Animatable2Compat.AnimationCallback() {
@@ -184,8 +184,8 @@ class CustomDialog(private val context: Context, private val binding: DialogDraw
                                     isLegendary = document.data.get("isLegendary") as Boolean,
                                     isMythical = document.data.get("isMythical") as Boolean,
                                     percentage = document.data.get("percentage") as Double,
-                                    type = document.data.get("type") as List<String>
-                                )
+                                    type = document.data.get("type") as List<String>,
+                                ),
                             )
                             remainPercentage += document.data.get("percentage") as Double
                             remainPercentageList.add(remainPercentage)

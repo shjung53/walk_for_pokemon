@@ -13,9 +13,8 @@ class GlobalApplication : Application() {
             this,
             BuildConfig.NAVER_LOGIN_CLIENT_ID,
             BuildConfig.NAVER_LOGIN_CLIENT_SECRET,
-            "Walk for Pokemon"
+            "Walk for Pokemon",
         )
         FirebaseApp.initializeApp(this)
-
     }
 }

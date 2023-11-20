@@ -9,7 +9,6 @@ import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import com.ssafy.walkforpokemon.databinding.ActivitySplashBinding
 
-
 @SuppressLint("CustomSplashScreen")
 class SplashActivity : AppCompatActivity() {
 
