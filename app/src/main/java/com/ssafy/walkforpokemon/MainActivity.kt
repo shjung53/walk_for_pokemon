@@ -82,48 +82,6 @@ class MainActivity : AppCompatActivity() {
         // 네비게이션 컨트롤러
         val navController = navHostFragment.navController
 
-        val homeTransitionAnim = NavOptions.Builder()
-            .setLaunchSingleTop(true)
-            .setEnterAnim(R.anim.slide_in_right)
-            .setExitAnim(R.anim.slide_out_left)
-            .setPopEnterAnim(R.anim.slide_in_left)
-            .setPopExitAnim(R.anim.slide_out_right)
-            .setPopUpTo(navController.graph.startDestinationId, false)
-            .build()
-
-        val dictionaryTransitionOption = NavOptions.Builder()
-            .setLaunchSingleTop(true)
-            .setEnterAnim(R.anim.slide_in_right)
-            .setExitAnim(R.anim.slide_out_left)
-            .setPopEnterAnim(R.anim.slide_in_left)
-            .setPopExitAnim(R.anim.slide_out_right)
-            .setPopUpTo(navController.graph.startDestinationId, false)
-            .build()
-
-        binding.bottomNavigation.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.draw -> {
-                    navController.navigate(R.id.draw, null)
-                }
-
-                R.id.home -> {
-                    navController.navigate(R.id.home, null, homeTransitionAnim)
-                }
-
-                R.id.dictioniary -> {
-                    navController.navigate(R.id.dictioniary, null, dictionaryTransitionOption)
-                }
-            }
-            true
-        }
-
-        binding.bottomNavigation.setOnItemReselectedListener { item ->
-            if (item.itemId == R.id.draw) navController.navigate(R.id.draw, null)
-        }
-
-        binding.bottomNavigation.itemIconTintList = null
-
-        binding.bottomNavigation.selectedItemId = R.id.home
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

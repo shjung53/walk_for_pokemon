@@ -11,7 +11,7 @@
         android:id="@+id/logoutBtn"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_margin="12dp"
+        android:layout_margin="20dp"
         android:background="@null"
         android:minWidth="0dp"
         android:minHeight="0dp"
@@ -35,7 +35,7 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="12dp"
+        android:layout_margin="20dp"
         android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -49,7 +49,6 @@
                 android:id="@+id/coinImage"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginHorizontal="12dp"
                 android:elevation="2dp"
                 android:src="@drawable/mileage_coin"
                 app:layout_constraintStart_toStartOf="parent"
@@ -57,12 +56,14 @@
 
             <TextView
                 android:id="@+id/nowMileage"
-                android:layout_width="wrap_content"
+                android:layout_width="120dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="28dp"
+                android:layout_marginStart="16dp"
                 android:background="@drawable/outlined_background"
                 android:paddingStart="24dp"
-                android:text="10000000"
+                android:text="10,000,000"
+                android:gravity="right"
+                android:fontFamily="@font/cartoon"
                 app:layout_constraintBottom_toBottomOf="@+id/coinImage"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -78,24 +79,83 @@
                 android:id="@+id/stepImage"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginHorizontal="12dp"
                 android:elevation="2dp"
-                android:src="@drawable/run_step"
+                android:src="@drawable/run_step_inversion"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/nowSteps"
-                android:layout_width="wrap_content"
+                android:layout_width="120dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="28dp"
+                android:layout_marginStart="16dp"
+                android:fontFamily="@font/cartoon"
                 android:background="@drawable/outlined_background_sky"
                 android:paddingStart="24dp"
-                android:text="10000000"
+                android:gravity="right"
+                android:text="10,000,000"
                 app:layout_constraintBottom_toBottomOf="@+id/stepImage"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/stepImage" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/drawBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_margin="20dp"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:background="@null"
+            android:src="@drawable/monster_ball_200"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="뽑기"
+            android:textSize="16sp"
+            android:layout_gravity="center"
+            android:fontFamily="@font/cartoon"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/dictionaryBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_margin="20dp"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:background="@null"
+            android:src="@drawable/dictionary_240"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="도감"
+            android:textSize="16sp"
+            android:layout_gravity="center"
+            android:fontFamily="@font/cartoon"
+            />
+
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

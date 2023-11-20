@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.NavController
+import androidx.navigation.findNavController
 import com.ssafy.walkforpokemon.adapter.DictionaryAdapter
 import com.ssafy.walkforpokemon.databinding.FragmentDictionaryBinding
 import com.ssafy.walkforpokemon.viewmodels.DictionaryViewModel
@@ -17,6 +19,8 @@ class DictionaryFragment : Fragment() {
     private val binding get() = _binding!!
     private val dictionaryViewModel: DictionaryViewModel by activityViewModels()
     private lateinit var dictionaryAdapter: DictionaryAdapter
+
+    private lateinit var navController: NavController
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,6 +45,13 @@ class DictionaryFragment : Fragment() {
             dictionaryAdapter.itemList = it
             dictionaryAdapter.notifyDataSetChanged()
         }
+
+        navController = binding.root.findNavController()
+
+        binding.achievemnt.setOnClickListener {
+            navController.navigateUp()
+        }
+
     }
 
     override fun onDestroyView() {
