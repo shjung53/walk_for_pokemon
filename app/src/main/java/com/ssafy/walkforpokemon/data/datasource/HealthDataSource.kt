@@ -8,7 +8,6 @@ import com.google.android.gms.fitness.data.DataType
 import com.google.android.gms.fitness.data.Field
 import com.google.android.gms.fitness.request.DataReadRequest
 import com.ssafy.walkforpokemon.SuccessOrFailure
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.suspendCancellableCoroutine
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -30,7 +29,6 @@ class HealthDataSource @Inject constructor() {
         }
     }
 
-
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun fetchStepCount(): Result<Int> {
         val now = LocalDateTime.now()
@@ -50,8 +48,12 @@ class HealthDataSource @Inject constructor() {
                 .readData(readRequest)
                 .addOnSuccessListener { response ->
                     val stepCount =
-                        (response.buckets[0].dataSets[0].dataPoints[0].getValue(Field.FIELD_STEPS)
-                            .toString().toInt())
+                        (
+                            response.buckets[0].dataSets[0].dataPoints[0].getValue(
+                                Field.FIELD_STEPS,
+                            )
+                                .toString().toInt()
+                            )
                     continuation.resume(Result.success(stepCount), null)
                     // Use response data here
                 }

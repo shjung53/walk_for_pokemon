@@ -4,6 +4,7 @@ plugins {
     id("com.google.gms.google-services")
     id 'kotlin-kapt'
     id 'com.google.dagger.hilt.android'
+    id 'org.jlleitschuh.gradle.ktlint' version '11.3.1'
 }
 
 def properties = new Properties()
@@ -34,11 +35,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility 17
-        targetCompatibility 17
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = '17'
+        jvmTarget = JavaVersion.VERSION_17
     }
 
     buildFeatures {
@@ -48,6 +49,10 @@ android {
 
     kapt {
         correctErrorTypes true
+    }
+
+    ktlint {
+        version = "0.48.0"
     }
 }
 

@@ -1,9 +1,7 @@
 package com.ssafy.walkforpokemon.viewmodels
 
-import android.content.Context
 import android.os.Build
 import android.util.Log
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -43,7 +41,7 @@ class MainViewModel @Inject constructor(
         withContext(Dispatchers.IO) {
             fetchUserIdUseCase.invoke().fold(
                 onSuccess = { id = it },
-                onFailure = {}
+                onFailure = {},
             )
         }
         val temp = _user.value?.copy()
@@ -65,10 +63,9 @@ class MainViewModel @Inject constructor(
                         },
                         onFailure = { throwable ->
                             Log.d("fetchUser", throwable.message.toString())
-                        }
+                        },
                     )
                 }
-
             }
         }
     }
@@ -79,7 +76,7 @@ class MainViewModel @Inject constructor(
                 registerUserUseCase.invoke(it).fold(
                     onSuccess = {},
                     onFailure = {
-                    }
+                    },
                 )
             }
         }
@@ -90,7 +87,7 @@ class MainViewModel @Inject constructor(
             initHealthClientUseCase.invoke(healthClient).fold(
                 onSuccess = {},
                 onFailure = {
-                }
+                },
             )
         }
     }
@@ -101,7 +98,7 @@ class MainViewModel @Inject constructor(
             fetchStepCountUseCase.invoke().fold(
                 onSuccess = {},
                 onFailure = {
-                }
+                },
             )
         }
     }

@@ -37,7 +37,8 @@ import kotlinx.coroutines.withContext
 
 private const val TAG = "CustomDialog"
 
-class CustomDialog(private val context: Context, private val binding: DialogDrawBinding) : AppCompatActivity() {
+class CustomDialog(private val context: Context, private val binding: DialogDrawBinding) :
+    AppCompatActivity() {
 
     private val dialog = Dialog(context)
 
@@ -45,8 +46,6 @@ class CustomDialog(private val context: Context, private val binding: DialogDraw
     private lateinit var negativeButton: Button
 
     private val requestOptions = RequestOptions()
-
-
 
     fun build(bodyMessage: String, context: Context) {
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -62,7 +61,6 @@ class CustomDialog(private val context: Context, private val binding: DialogDraw
 
         positiveButton = dialog.findViewById(R.id.positiveBtn)
         positiveButton.setOnClickListener {
-
             /* TODO
                 뽑기했을 때
                 1. 마일리지 깎기
@@ -77,7 +75,7 @@ class CustomDialog(private val context: Context, private val binding: DialogDraw
                         e: GlideException?,
                         model: Any?,
                         target: Target<Drawable>?,
-                        isFirstResource: Boolean
+                        isFirstResource: Boolean,
                     ): Boolean {
                         return false
                     }
@@ -87,10 +85,11 @@ class CustomDialog(private val context: Context, private val binding: DialogDraw
                         model: Any?,
                         target: Target<Drawable>?,
                         dataSource: DataSource?,
-                        isFirstResource: Boolean
+                        isFirstResource: Boolean,
                     ): Boolean {
                         (resource as GifDrawable).setLoopCount(0)
-                        resource.registerAnimationCallback(object : Animatable2Compat.AnimationCallback() {
+                        resource.registerAnimationCallback(object :
+                            Animatable2Compat.AnimationCallback() {
                             override fun onAnimationEnd(drawable: Drawable?) {
                                 Glide.with(context).clear(binding.pokeballIV)
                                 binding.pokeballIV.visibility = View.GONE
@@ -100,8 +99,6 @@ class CustomDialog(private val context: Context, private val binding: DialogDraw
 
                         return false
                     }
-
-
                 })
                 .apply(requestOptions)
                 .into(binding.pokeballIV)
@@ -116,23 +113,20 @@ class CustomDialog(private val context: Context, private val binding: DialogDraw
 
             pokeballFadeOut.addListener(object : Animator.AnimatorListener {
                 override fun onAnimationStart(animation: Animator) {
-
                 }
+
                 override fun onAnimationEnd(animation: Animator) {
                     // 애니메이션(fade out)이 끝나면 호출
                     binding.pokeballIV.visibility = View.GONE
                     binding.drawPokemonIV.visibility = View.VISIBLE
                     pokemonFadeIn.start()
-
                 }
 
                 override fun onAnimationCancel(animation: Animator) {
-
                 }
+
                 override fun onAnimationRepeat(animation: Animator) {
-
                 }
-
             })
 
             dialog.dismiss()
@@ -140,28 +134,24 @@ class CustomDialog(private val context: Context, private val binding: DialogDraw
 
         negativeButton = dialog.findViewById(R.id.negativeBtn)
         negativeButton.setOnClickListener {
-
             binding.root.findNavController().popBackStack()
             dialog.dismiss()
         }
-
 
         dialog.setCancelable(false)
         dialog.show()
     }
 
     fun letsDraw(context: Context) {
-
         /* TODO
             1. firebase data에서 percentage 조정해서 저장해놓기
             2. 도감 데이터 받아와서 로컬에 저장해놓은 거에서 퍼센티지 받아오기
          */
 
-
         var pokeDataList = mutableListOf<Pokemon>()
         var remainPercentageList = mutableListOf<Double>()
         var remainPercentage = 0.0
-        var resultId = 0  // 뽑은 포켓몬 아이디
+        var resultId = 0 // 뽑은 포켓몬 아이디
         val db = Firebase.firestore
 
         CoroutineScope(Dispatchers.IO).launch {
@@ -180,12 +170,11 @@ class CustomDialog(private val context: Context, private val binding: DialogDraw
                                     isLegendary = document.data.get("isLegendary") as Boolean,
                                     isMythical = document.data.get("isMythical") as Boolean,
                                     percentage = document.data.get("percentage") as Double,
-                                    type = document.data.get("type") as List<String>
-                                )
+                                    type = document.data.get("type") as List<String>,
+                                ),
                             )
                             remainPercentage += document.data.get("percentage") as Double
                             remainPercentageList.add(remainPercentage)
-
                         }
                     }
                     .addOnFailureListener {
@@ -204,14 +193,13 @@ class CustomDialog(private val context: Context, private val binding: DialogDraw
                         }
                     }
 
-                    Log.d(TAG, "letsDraw: 불렸니..? ${resultId}, ${context}")
+                    Log.d(TAG, "letsDraw: 불렸니..? $resultId, $context")
 
                     Glide.with(context).load(pokeDataList[resultId].imageOfficial)
                         .into(binding.drawPokemonIV)
-
                 }
             } catch (e: Exception) {
-                Log.d(TAG, "onViewCreated: 통신 에러.... ${e}")
+                Log.d(TAG, "onViewCreated: 통신 에러.... $e")
             }
         }
     }

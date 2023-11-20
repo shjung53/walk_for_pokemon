@@ -30,8 +30,8 @@ class PokemonDataSource @Inject constructor() {
                                 isLegendary = document.data["isLegendary"] as Boolean,
                                 isMythical = document.data["isMythical"] as Boolean,
                                 percentage = document.data["percentage"].toString().toDouble(),
-                                type = document.data["type"] as List<String>
-                            )
+                                type = document.data["type"] as List<String>,
+                            ),
                         )
                     }
                     continuation.resume(Result.success(pokemonResponseList), null)
@@ -40,8 +40,8 @@ class PokemonDataSource @Inject constructor() {
                     continuation.resume(
                         Result.failure(
                             Exception(
-                                NidOAuthPreferencesManager.errorDescription ?: "unknown error"
-                            )
+                                NidOAuthPreferencesManager.errorDescription ?: "unknown error",
+                            ),
                         ),
                         null,
                     )

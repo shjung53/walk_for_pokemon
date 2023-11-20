@@ -3,7 +3,6 @@ package com.ssafy.walkforpokemon.domain.user
 import com.ssafy.walkforpokemon.SuccessOrFailure
 import com.ssafy.walkforpokemon.data.dataclass.User
 import com.ssafy.walkforpokemon.data.repository.UserRepository
-import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 class RegisterUserUseCase @Inject constructor(private val userRepository: UserRepository) {

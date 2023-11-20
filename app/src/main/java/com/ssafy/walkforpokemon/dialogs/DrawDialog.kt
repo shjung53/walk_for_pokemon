@@ -16,7 +16,7 @@ class DrawDialog : DialogFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         _binding = DialogDrawBinding.inflate(layoutInflater)
 
@@ -29,6 +29,4 @@ class DrawDialog : DialogFragment() {
 
         return binding.root
     }
-
-
 }

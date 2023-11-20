@@ -11,19 +11,17 @@ import kotlinx.coroutines.launch
 
 class DictionaryViewModel(private val pokemonRepository: PokemonRepository) : ViewModel() {
 
-    fun fetchPokemons(){
+    fun fetchPokemons() {
         viewModelScope.launch {
         }
     }
-
 
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 DictionaryViewModel(
                     pokemonRepository = PokemonRepository(
-                        pokemonDataSource = PokemonDataSource(
-                        ),
+                        pokemonDataSource = PokemonDataSource(),
                     ),
                 )
             }

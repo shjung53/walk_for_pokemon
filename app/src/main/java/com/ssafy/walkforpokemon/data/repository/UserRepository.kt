@@ -6,7 +6,6 @@ import com.ssafy.walkforpokemon.LoginStatus
 import com.ssafy.walkforpokemon.SuccessOrFailure
 import com.ssafy.walkforpokemon.data.dataclass.User
 import com.ssafy.walkforpokemon.data.datasource.UserDataSource
-import dagger.hilt.android.AndroidEntryPoint
 import java.lang.Exception
 import javax.inject.Inject
 
@@ -15,7 +14,7 @@ class UserRepository @Inject constructor(private val userDataSource: UserDataSou
     suspend fun loginWithNaver(context: Context): Result<SuccessOrFailure> {
         userDataSource.authenticateWithNaver(context).fold(
             onSuccess = { return Result.success(it) },
-            onFailure = { return Result.failure(it) }
+            onFailure = { return Result.failure(it) },
         )
     }
 
@@ -28,25 +27,22 @@ class UserRepository @Inject constructor(private val userDataSource: UserDataSou
         } catch (e: Exception) {
             return Result.failure(e)
         }
-
     }
 
     suspend fun fetchUserId(): Result<String> {
         userDataSource.fetchUserId().fold(
             onSuccess = { return Result.success(it) },
-            onFailure = { return Result.failure(it) }
+            onFailure = { return Result.failure(it) },
         )
     }
 
     suspend fun fetchUser(id: String): Result<User> =
         userDataSource.fetchUser(id)
 
-
     suspend fun registerUser(id: String): Result<SuccessOrFailure> {
         userDataSource.registerUser(id).fold(
             onSuccess = { return Result.success(it) },
-            onFailure = { return Result.failure(it) }
+            onFailure = { return Result.failure(it) },
         )
     }
-
 }

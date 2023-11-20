@@ -1,7 +1,6 @@
 package com.ssafy.walkforpokemon.viewmodels
 
 import android.content.Context
-import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -30,7 +29,7 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             loginWithNaverUseCase.invoke(context).fold(
                 onSuccess = { refreshLoginStatus() },
-                onFailure = {}
+                onFailure = {},
             )
         }
     }
@@ -40,7 +39,7 @@ class LoginViewModel @Inject constructor(
             refreshLoginStatusUseCase.invoke().fold(
                 onSuccess = { _loginStatus.value = it },
                 onFailure = {
-                }
+                },
             )
         }
     }

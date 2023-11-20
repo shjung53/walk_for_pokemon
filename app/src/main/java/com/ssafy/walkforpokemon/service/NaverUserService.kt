@@ -23,5 +23,5 @@ interface NaverUserService {
 }
 
 data class UserResponse(
-    @SerializedName("response")val response: User
+    @SerializedName("response")val response: User,
 )

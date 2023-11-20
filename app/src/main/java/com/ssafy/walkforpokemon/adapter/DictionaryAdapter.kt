@@ -23,7 +23,7 @@ class DictionaryAdapter(val context: Context, val itemList: List<PokemonResponse
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
-        viewType: Int
+        viewType: Int,
     ): DictionaryAdapter.DictionaryViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.dictionary_item_view, parent, false)
@@ -50,5 +50,4 @@ class DictionaryAdapter(val context: Context, val itemList: List<PokemonResponse
     fun setItemClickListeneer(itemClickListener: onItemClickListener) {
         this.itemClickListener = itemClickListener
     }
-
 }
