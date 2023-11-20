@@ -1,6 +1,0 @@
-<resources>
-    <!-- Base application theme. -->
-    <style name="Theme.WalkForPokemon" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/pokemon_yellow</item>
-    </style>
-</resources>

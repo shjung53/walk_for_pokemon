@@ -15,11 +15,12 @@
             />
 
     </fragment>
+
     <fragment
         android:id="@+id/home"
         android:name="com.ssafy.walkforpokemon.HomeFragment"
         android:label="fragment_bottom1"
-        tools:layout="@layout/fragment_home" >
+        tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/action_home_to_dictioniary"
             app:destination="@id/dictioniary" />
@@ -28,9 +29,9 @@
         android:id="@+id/dictioniary"
         android:name="com.ssafy.walkforpokemon.DictionaryFragment"
         android:label="fragment_bottom2"
-        tools:layout="@layout/fragment_dictionary" >
+        tools:layout="@layout/fragment_dictionary">
         <action
             android:id="@+id/action_dictioniary_to_home"
-            app:destination="@id/home" />
+            app:destination="@id/home"/>
     </fragment>
 </navigation>

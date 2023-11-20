@@ -1,30 +1,33 @@
 package com.ssafy.walkforpokemon.viewmodels
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.ssafy.walkforpokemon.data.datasource.PokemonDataSource
-import com.ssafy.walkforpokemon.data.repository.PokemonRepository
+import com.ssafy.walkforpokemon.data.dataclass.Pokemon
+import com.ssafy.walkforpokemon.data.dataclass.User
+import com.ssafy.walkforpokemon.domain.pokemon.FetchUserPokemonListUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class DictionaryViewModel(private val pokemonRepository: PokemonRepository) : ViewModel() {
+@HiltViewModel
+class DictionaryViewModel @Inject constructor(
+    private val fetchUserPokemonListUseCase: FetchUserPokemonListUseCase,
+) :
+    ViewModel() {
 
-    fun fetchPokemons() {
+    private var _pokemonList = MutableLiveData<List<Pokemon>>(emptyList())
+    val pokemonList: LiveData<List<Pokemon>> get() = _pokemonList
+
+    fun fetchUserPokemonList(user: User) {
         viewModelScope.launch {
-        }
-    }
-
-    companion object {
-        val Factory: ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                DictionaryViewModel(
-                    pokemonRepository = PokemonRepository(
-                        pokemonDataSource = PokemonDataSource(),
-                    ),
-                )
-            }
+            fetchUserPokemonListUseCase.invoke(user).fold(
+                onSuccess = {
+                    _pokemonList.value = it
+                },
+                onFailure = {},
+            )
         }
     }
 }

@@ -18,7 +18,7 @@ class UserRepository @Inject constructor(private val userDataSource: UserDataSou
         )
     }
 
-    suspend fun getLoginStatus(): Result<LoginStatus> {
+    fun getLoginStatus(): Result<LoginStatus> {
         return try {
             when (userDataSource.getLoginStatus()) {
                 NidOAuthLoginState.OK -> Result.success(LoginStatus.Login)

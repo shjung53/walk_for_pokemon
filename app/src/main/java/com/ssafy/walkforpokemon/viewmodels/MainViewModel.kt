@@ -29,56 +29,48 @@ class MainViewModel @Inject constructor(
 ) :
     ViewModel() {
 
-    private var _user: MutableLiveData<User> = MutableLiveData()
-    private val user get() = _user
+    private var _userId: MutableLiveData<String> = MutableLiveData()
+    val userId get() = _userId
 
-    init {
-        _user.value = User("")
-    }
+    private var _user: MutableLiveData<User> = MutableLiveData(User(""))
+    val user get() = _user
 
-    private suspend fun fetchUserId() {
-        var id = ""
-        withContext(Dispatchers.IO) {
-            fetchUserIdUseCase.invoke().fold(
-                onSuccess = { id = it },
-                onFailure = {},
-            )
-        }
-        val temp = _user.value?.copy()
-        _user.value = temp?.copy(id = id)
-    }
-
-    fun fetchUser() {
+    fun fetchUserId() {
         viewModelScope.launch {
             withContext(Dispatchers.Main) {
-                fetchUserId()
-                user.value?.let {
-                    fetchUserUseCase.invoke(it).fold(
-                        onSuccess = { result ->
-                            if (result.id == "") {
-                                registerUser()
-                            } else {
-                                _user.value = result
-                            }
-                        },
-                        onFailure = { throwable ->
-                            Log.d("fetchUser", throwable.message.toString())
-                        },
-                    )
-                }
+                fetchUserIdUseCase.invoke().fold(
+                    onSuccess = { _userId.value = it },
+                    onFailure = {},
+                )
             }
+            _user.value = User(id = userId.value ?: "")
         }
     }
 
-    private fun registerUser() {
+    fun fetchUser(id: String) {
         viewModelScope.launch {
-            user.value?.let {
-                registerUserUseCase.invoke(it).fold(
-                    onSuccess = {},
-                    onFailure = {
-                    },
-                )
-            }
+            fetchUserUseCase.invoke(id).fold(
+                onSuccess = { result ->
+                    if (result.id.isEmpty()) {
+                        registerUser(id)
+                    } else {
+                        _user.value = result
+                    }
+                },
+                onFailure = { throwable ->
+                    Log.d("fetchUser", throwable.message.toString())
+                },
+            )
+        }
+    }
+
+    private fun registerUser(id: String) {
+        viewModelScope.launch {
+            registerUserUseCase.invoke(id).fold(
+                onSuccess = {},
+                onFailure = {
+                },
+            )
         }
     }
 

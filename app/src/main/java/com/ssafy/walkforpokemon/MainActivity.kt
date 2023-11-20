@@ -7,13 +7,14 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.NavigationUI
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.fitness.Fitness
 import com.google.android.gms.fitness.FitnessOptions
 import com.google.android.gms.fitness.data.DataType
 import com.ssafy.walkforpokemon.databinding.ActivityMainBinding
+import com.ssafy.walkforpokemon.viewmodels.DictionaryViewModel
 import com.ssafy.walkforpokemon.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -27,6 +28,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var fitnessOptions: FitnessOptions
     private val mainViewModel: MainViewModel by viewModels()
+    private val dictionaryViewModel: DictionaryViewModel by viewModels()
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,7 +43,15 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        mainViewModel.fetchUser()
+        mainViewModel.fetchUserId()
+
+        mainViewModel.userId.observe(this) {
+            mainViewModel.fetchUser(it)
+        }
+
+        mainViewModel.user.observe(this) {
+            dictionaryViewModel.fetchUserPokemonList(it)
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -71,10 +81,49 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.navigationHost) as NavHostFragment
         // 네비게이션 컨트롤러
         val navController = navHostFragment.navController
-        // 바인딩
-        NavigationUI.setupWithNavController(binding.bottomNavigation, navController)
+
+        val homeTransitionAnim = NavOptions.Builder()
+            .setLaunchSingleTop(true)
+            .setEnterAnim(R.anim.slide_in_right)
+            .setExitAnim(R.anim.slide_out_left)
+            .setPopEnterAnim(R.anim.slide_in_left)
+            .setPopExitAnim(R.anim.slide_out_right)
+            .setPopUpTo(navController.graph.startDestinationId, false)
+            .build()
+
+        val dictionaryTransitionOption = NavOptions.Builder()
+            .setLaunchSingleTop(true)
+            .setEnterAnim(R.anim.slide_in_right)
+            .setExitAnim(R.anim.slide_out_left)
+            .setPopEnterAnim(R.anim.slide_in_left)
+            .setPopExitAnim(R.anim.slide_out_right)
+            .setPopUpTo(navController.graph.startDestinationId, false)
+            .build()
+
+        binding.bottomNavigation.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.draw -> {
+                    navController.navigate(R.id.draw, null)
+                }
+
+                R.id.home -> {
+                    navController.navigate(R.id.home, null, homeTransitionAnim)
+                }
+
+                R.id.dictioniary -> {
+                    navController.navigate(R.id.dictioniary, null, dictionaryTransitionOption)
+                }
+            }
+            true
+        }
+
+        binding.bottomNavigation.setOnItemReselectedListener { item ->
+            if (item.itemId == R.id.draw) navController.navigate(R.id.draw, null)
+        }
 
         binding.bottomNavigation.itemIconTintList = null
+
+        binding.bottomNavigation.selectedItemId = R.id.home
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <fragment
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/navigationHost"
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="0dp"
@@ -26,7 +26,10 @@
         app:itemIconSize="36dp"
         app:labelVisibilityMode="labeled"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:menu="@menu/bottom_navigation_menu" />
+        app:menu="@menu/bottom_navigation_menu"
+        app:itemRippleColor="@color/pokemon_yellow"
+        app:itemActiveIndicatorStyle="@color/bottom_navigation_selector"
+        />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

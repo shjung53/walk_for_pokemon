@@ -17,13 +17,9 @@ class LoginViewModel @Inject constructor(
     private val refreshLoginStatusUseCase: RefreshLoginStatusUseCase,
 ) : ViewModel() {
 
-    private val _loginStatus = MutableLiveData<LoginStatus>()
+    private val _loginStatus = MutableLiveData<LoginStatus>(LoginStatus.Logout)
 
     val loginStatus get() = _loginStatus
-
-    init {
-        _loginStatus.value = LoginStatus.Logout
-    }
 
     fun onClickNaverLogin(context: Context) {
         viewModelScope.launch {
