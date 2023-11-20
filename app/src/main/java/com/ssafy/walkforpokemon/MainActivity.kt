@@ -14,16 +14,19 @@ import com.google.android.gms.fitness.Fitness
 import com.google.android.gms.fitness.FitnessOptions
 import com.google.android.gms.fitness.data.DataType
 import com.ssafy.walkforpokemon.databinding.ActivityMainBinding
+import com.ssafy.walkforpokemon.viewmodels.MainViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var fitnessOptions: FitnessOptions
-    private val mainViewModel: MainViewModel by viewModels { MainViewModel.Factory }
+    private val mainViewModel: MainViewModel by viewModels()
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,6 +40,8 @@ class MainActivity : AppCompatActivity() {
                 createHealthClient()
             }
         }
+
+        mainViewModel.fetchUser()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
