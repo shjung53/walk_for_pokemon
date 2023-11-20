@@ -35,10 +35,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
-private const val TAG = "CustomDialog"
+private const val TAG = "CustomDialog_싸피"
 
-class CustomDialog(private val context: Context, private val binding: DialogDrawBinding) :
-    AppCompatActivity() {
+class CustomDialog(
+    context: Context,
+    private val binding: DialogDrawBinding,
+) : AppCompatActivity() {
 
     private val dialog = Dialog(context)
 
@@ -109,6 +111,13 @@ class CustomDialog(private val context: Context, private val binding: DialogDraw
             pokeballFadeOut.duration = 2000
             val pokemonFadeIn = ObjectAnimator.ofFloat(binding.drawPokemonIV, "alpha", 0f, 1f)
             pokemonFadeIn.duration = 3000
+            val pokeTextFadeIn = ObjectAnimator.ofFloat(
+                binding.pokeTextLinearLayout,
+                "alpha",
+                0f,
+                1f,
+            )
+            pokeTextFadeIn.duration = 3000
             pokeballFadeOut.start()
 
             pokeballFadeOut.addListener(object : Animator.AnimatorListener {
@@ -119,7 +128,9 @@ class CustomDialog(private val context: Context, private val binding: DialogDraw
                     // 애니메이션(fade out)이 끝나면 호출
                     binding.pokeballIV.visibility = View.GONE
                     binding.drawPokemonIV.visibility = View.VISIBLE
+                    binding.pokeTextLinearLayout.visibility = View.VISIBLE
                     pokemonFadeIn.start()
+                    pokeTextFadeIn.start()
                 }
 
                 override fun onAnimationCancel(animation: Animator) {
@@ -193,7 +204,28 @@ class CustomDialog(private val context: Context, private val binding: DialogDraw
                         }
                     }
 
-                    Log.d(TAG, "letsDraw: 불렸니..? $resultId, $context")
+                    binding.drawPokemonName.text = pokeDataList[resultId].nameKorean
+                    binding.type1Btn.text = pokeDataList[resultId].type[0]
+                    val resource1 = context.resources.getIdentifier(
+                        "type_${pokeDataList[resultId].type[0]}",
+                        "color",
+                        context.packageName,
+                    )
+                    Log.d(TAG, "letsDraw: ${pokeDataList[resultId].type}, $resource1")
+                    binding.type1Btn.setBackgroundResource(resource1)
+
+                    if (pokeDataList[resultId].type.size == 1) {
+                        binding.type2Btn.visibility = View.GONE
+                    } else {
+                        binding.type2Btn.text = pokeDataList[resultId].type[1]
+                        val resource2 = context.resources.getIdentifier(
+                            "type_${pokeDataList[resultId].type[1]}",
+                            "color",
+                            context.packageName,
+                        )
+                        Log.d(TAG, "letsDraw: $resource2")
+                        binding.type2Btn.setBackgroundResource(resource2)
+                    }
 
                     Glide.with(context).load(pokeDataList[resultId].imageOfficial)
                         .into(binding.drawPokemonIV)
