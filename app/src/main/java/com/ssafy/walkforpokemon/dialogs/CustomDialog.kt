@@ -1,4 +1,4 @@
-package com.ssafy.walkforpokemon
+package com.ssafy.walkforpokemon.dialogs
 
 import android.animation.Animator
 import android.animation.ObjectAnimator
@@ -26,8 +26,9 @@ import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.signature.ObjectKey
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.ssafy.walkforpokemon.R
+import com.ssafy.walkforpokemon.data.dataclass.Pokemon
 import com.ssafy.walkforpokemon.databinding.DialogDrawBinding
-import com.ssafy.walkforpokemon.dto.Pokemon
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -35,6 +36,7 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
 private const val TAG = "CustomDialog"
+
 class CustomDialog(private val context: Context, private val binding: DialogDrawBinding) : AppCompatActivity() {
 
     private val dialog = Dialog(context)
@@ -183,10 +185,6 @@ class CustomDialog(private val context: Context, private val binding: DialogDraw
                             )
                             remainPercentage += document.data.get("percentage") as Double
                             remainPercentageList.add(remainPercentage)
-//                            Log.d(
-//                                TAG,
-//                                "onViewCreated: ${document.id} => ${pokeDataList.size} , ${pokeDataList[pokeDataList.size - 1]}"
-//                            )
 
                         }
                     }
@@ -208,7 +206,8 @@ class CustomDialog(private val context: Context, private val binding: DialogDraw
 
                     Log.d(TAG, "letsDraw: 불렸니..? ${resultId}, ${context}")
 
-                    Glide.with(context).load(pokeDataList[resultId].imageOfficial).into(binding.drawPokemonIV)
+                    Glide.with(context).load(pokeDataList[resultId].imageOfficial)
+                        .into(binding.drawPokemonIV)
 
                 }
             } catch (e: Exception) {

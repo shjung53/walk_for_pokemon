@@ -1,4 +1,4 @@
-package com.ssafy.walkforpokemon
+package com.ssafy.walkforpokemon.dialogs
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import com.bumptech.glide.Glide
+import com.ssafy.walkforpokemon.R
 import com.ssafy.walkforpokemon.databinding.DialogLoadingBinding
 
 class LoadingDialog : DialogFragment() {

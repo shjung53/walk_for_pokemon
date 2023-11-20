@@ -1,4 +1,4 @@
-package com.ssafy.walkforpokemon
+package com.ssafy.walkforpokemon.dialogs
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -8,8 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import com.ssafy.walkforpokemon.databinding.DialogDrawBinding
-
-private const val TAG = "DrawDialog_싸피"
 
 class DrawDialog : DialogFragment() {
 
