@@ -37,7 +37,10 @@ import kotlinx.coroutines.withContext
 
 private const val TAG = "CustomDialog_싸피"
 
-class CustomDialog(private val context: Context, private val binding: DialogDrawBinding) : AppCompatActivity() {
+class CustomDialog(
+    context: Context,
+    private val binding: DialogDrawBinding,
+) : AppCompatActivity() {
 
     private val dialog = Dialog(context)
 
@@ -45,8 +48,6 @@ class CustomDialog(private val context: Context, private val binding: DialogDraw
     private lateinit var negativeButton: Button
 
     private val requestOptions = RequestOptions()
-
-
 
     fun build(bodyMessage: String, context: Context) {
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -62,7 +63,6 @@ class CustomDialog(private val context: Context, private val binding: DialogDraw
 
         positiveButton = dialog.findViewById(R.id.positiveBtn)
         positiveButton.setOnClickListener {
-
             /* TODO
                 뽑기했을 때
                 1. 마일리지 깎기
@@ -90,7 +90,8 @@ class CustomDialog(private val context: Context, private val binding: DialogDraw
                         isFirstResource: Boolean,
                     ): Boolean {
                         (resource as GifDrawable).setLoopCount(0)
-                        resource.registerAnimationCallback(object : Animatable2Compat.AnimationCallback() {
+                        resource.registerAnimationCallback(object :
+                            Animatable2Compat.AnimationCallback() {
                             override fun onAnimationEnd(drawable: Drawable?) {
                                 Glide.with(context).clear(binding.pokeballIV)
                                 binding.pokeballIV.visibility = View.GONE
@@ -100,8 +101,6 @@ class CustomDialog(private val context: Context, private val binding: DialogDraw
 
                         return false
                     }
-
-
                 })
                 .apply(requestOptions)
                 .into(binding.pokeballIV)
@@ -112,14 +111,19 @@ class CustomDialog(private val context: Context, private val binding: DialogDraw
             pokeballFadeOut.duration = 2000
             val pokemonFadeIn = ObjectAnimator.ofFloat(binding.drawPokemonIV, "alpha", 0f, 1f)
             pokemonFadeIn.duration = 3000
-            val pokeTextFadeIn = ObjectAnimator.ofFloat(binding.pokeTextLinearLayout, "alpha", 0f, 1f)
+            val pokeTextFadeIn = ObjectAnimator.ofFloat(
+                binding.pokeTextLinearLayout,
+                "alpha",
+                0f,
+                1f,
+            )
             pokeTextFadeIn.duration = 3000
             pokeballFadeOut.start()
 
             pokeballFadeOut.addListener(object : Animator.AnimatorListener {
                 override fun onAnimationStart(animation: Animator) {
-
                 }
+
                 override fun onAnimationEnd(animation: Animator) {
                     // 애니메이션(fade out)이 끝나면 호출
                     binding.pokeballIV.visibility = View.GONE
@@ -127,16 +131,13 @@ class CustomDialog(private val context: Context, private val binding: DialogDraw
                     binding.pokeTextLinearLayout.visibility = View.VISIBLE
                     pokemonFadeIn.start()
                     pokeTextFadeIn.start()
-
                 }
 
                 override fun onAnimationCancel(animation: Animator) {
-
                 }
+
                 override fun onAnimationRepeat(animation: Animator) {
-
                 }
-
             })
 
             dialog.dismiss()
@@ -144,28 +145,24 @@ class CustomDialog(private val context: Context, private val binding: DialogDraw
 
         negativeButton = dialog.findViewById(R.id.negativeBtn)
         negativeButton.setOnClickListener {
-
             binding.root.findNavController().popBackStack()
             dialog.dismiss()
         }
-
 
         dialog.setCancelable(false)
         dialog.show()
     }
 
     fun letsDraw(context: Context) {
-
         /* TODO
             1. firebase data에서 percentage 조정해서 저장해놓기
             2. 도감 데이터 받아와서 로컬에 저장해놓은 거에서 퍼센티지 받아오기
          */
 
-
         var pokeDataList = mutableListOf<Pokemon>()
         var remainPercentageList = mutableListOf<Double>()
         var remainPercentage = 0.0
-        var resultId = 0  // 뽑은 포켓몬 아이디
+        var resultId = 0 // 뽑은 포켓몬 아이디
         val db = Firebase.firestore
 
         CoroutineScope(Dispatchers.IO).launch {
@@ -189,7 +186,6 @@ class CustomDialog(private val context: Context, private val binding: DialogDraw
                             )
                             remainPercentage += document.data.get("percentage") as Double
                             remainPercentageList.add(remainPercentage)
-
                         }
                     }
                     .addOnFailureListener {
@@ -210,31 +206,32 @@ class CustomDialog(private val context: Context, private val binding: DialogDraw
 
                     binding.drawPokemonName.text = pokeDataList[resultId].nameKorean
                     binding.type1Btn.text = pokeDataList[resultId].type[0]
-                    val resource1 = context.resources.getIdentifier("type_${pokeDataList[resultId].type[0]}",
+                    val resource1 = context.resources.getIdentifier(
+                        "type_${pokeDataList[resultId].type[0]}",
                         "color",
-                        context.packageName)
-                    Log.d(TAG, "letsDraw: ${pokeDataList[resultId].type.toString()}, ${resource1}")
+                        context.packageName,
+                    )
+                    Log.d(TAG, "letsDraw: ${pokeDataList[resultId].type}, $resource1")
                     binding.type1Btn.setBackgroundResource(resource1)
 
                     if (pokeDataList[resultId].type.size == 1) {
                         binding.type2Btn.visibility = View.GONE
                     } else {
                         binding.type2Btn.text = pokeDataList[resultId].type[1]
-                        val resource2 = context.resources.getIdentifier("type_${pokeDataList[resultId].type[1]}",
+                        val resource2 = context.resources.getIdentifier(
+                            "type_${pokeDataList[resultId].type[1]}",
                             "color",
-                            context.packageName)
-                        Log.d(TAG, "letsDraw: ${resource2}")
+                            context.packageName,
+                        )
+                        Log.d(TAG, "letsDraw: $resource2")
                         binding.type2Btn.setBackgroundResource(resource2)
-
                     }
-
 
                     Glide.with(context).load(pokeDataList[resultId].imageOfficial)
                         .into(binding.drawPokemonIV)
-
                 }
             } catch (e: Exception) {
-                Log.d(TAG, "onViewCreated: 통신 에러.... ${e}")
+                Log.d(TAG, "onViewCreated: 통신 에러.... $e")
             }
         }
     }
