@@ -45,4 +45,11 @@ class UserRepository @Inject constructor(private val userDataSource: UserDataSou
             onFailure = { return Result.failure(it) },
         )
     }
+
+    suspend fun addNewPokemon(userId:String, pokemonList: List<Int>): Result<SuccessOrFailure> {
+        userDataSource.updateUserPokemonList(userId, pokemonList).fold(
+            onSuccess = { return Result.success(it) },
+            onFailure = { return Result.failure(it) },
+        )
+    }
 }

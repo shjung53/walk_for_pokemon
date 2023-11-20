@@ -12,6 +12,7 @@ import com.ssafy.walkforpokemon.data.dataclass.User
 import com.ssafy.walkforpokemon.service.NaverUserService
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 private const val TAG = "UserDataSource"
@@ -110,6 +111,38 @@ class UserDataSource @Inject constructor() {
                         null,
                     )
                     Log.d(TAG, "registerUser() called with: e = $e")
+                }
+        }
+        return result
+    }
+
+    suspend fun updateUserPokemonList(userId: String, pokemonList: List<Int>): Result<SuccessOrFailure> {
+        var documentId = ""
+        Firebase.firestore.collection("user").whereEqualTo("id", userId).get()
+            .addOnSuccessListener { result ->
+                for (document in result) {
+                    documentId = document.id
+                }
+            }.await()
+
+        val result = suspendCancellableCoroutine { continuation ->
+            Firebase.firestore.collection("user").document(documentId).update("myPokemons", pokemonList)
+                .addOnSuccessListener { documentReference ->
+                    continuation.resume(Result.success(SuccessOrFailure.Success), null)
+                    Log.d(
+                        TAG,
+                        "updateUserPokemonList() called with: documentReference = $documentReference"
+                    )
+                }.addOnFailureListener { e ->
+                    continuation.resume(
+                        Result.failure(
+                            Exception(
+                                errorDescription ?: "unknown error",
+                            ),
+                        ),
+                        null,
+                    )
+                    Log.d(TAG, "updateUserPokemonList() called with: e = $e")
                 }
         }
         return result

@@ -6,12 +6,13 @@
     android:layout_gravity="center">
 
     <ImageView
-        android:id="@+id/pokeballIV"
+        android:id="@+id/drawGif"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_gravity="center"
         android:scaleType="centerCrop"
         android:visibility="gone"
+        android:adjustViewBounds="true"
         />
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -20,7 +21,7 @@
         >
 
         <ImageView
-            android:id="@+id/drawPokemonIV"
+            android:id="@+id/pokemonImage"
             app:layout_constraintWidth_percent="0.5"
             app:layout_constraintHeight_percent="0.5"
             android:adjustViewBounds="true"
@@ -39,7 +40,7 @@
             android:id="@+id/pokeTextLinearLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/drawPokemonIV"
+            app:layout_constraintTop_toBottomOf="@+id/pokemonImage"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -47,7 +48,7 @@
             android:visibility="gone">
 
             <TextView
-                android:id="@+id/drawPokemonName"
+                android:id="@+id/pokemonName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -60,12 +61,12 @@
                 android:layout_gravity="center"
                 android:orientation="horizontal">
 
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/type1Btn"
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/type1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
-                    android:textSize="10sp"
+                    android:textSize="12sp"
                     android:elevation="4dp"
                     android:layout_margin="2dp"
                     android:paddingHorizontal="4dp"
@@ -74,12 +75,12 @@
                     android:background="@null"
                     />
 
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/type2Btn"
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/type2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
-                    android:textSize="10sp"
+                    android:textSize="12sp"
                     android:elevation="4dp"
                     android:layout_margin="2dp"
                     android:paddingHorizontal="4dp"

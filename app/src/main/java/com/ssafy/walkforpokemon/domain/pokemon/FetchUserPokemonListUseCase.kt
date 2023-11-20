@@ -13,9 +13,9 @@ class FetchUserPokemonListUseCase @Inject constructor(
         val mainPokemon = user.mainPokemon
 
         pokemonRepository.fetchPokemons().fold(
-            onSuccess = {
+            onSuccess = {pokemonList ->
                 val result =
-                    it.map { pokemon ->
+                    pokemonList.map { pokemon ->
                         pokemon.copy(
                             isActive = myPokemons.contains(pokemon.id),
                             isMain = mainPokemon == pokemon.id,

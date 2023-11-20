@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -14,6 +15,7 @@ import com.google.android.gms.fitness.Fitness
 import com.google.android.gms.fitness.FitnessOptions
 import com.google.android.gms.fitness.data.DataType
 import com.ssafy.walkforpokemon.databinding.ActivityMainBinding
+import com.ssafy.walkforpokemon.dialogs.DrawDialog
 import com.ssafy.walkforpokemon.viewmodels.DictionaryViewModel
 import com.ssafy.walkforpokemon.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -51,6 +53,10 @@ class MainActivity : AppCompatActivity() {
 
         mainViewModel.user.observe(this) {
             dictionaryViewModel.fetchUserPokemonList(it)
+            Log.d("이거", "onCreate() called ${it.myPokemons}")
+            Log.d("이거", "onCreate() called ${it.myPokemons.contains(2)}")
+            Log.d("이거", "onCreate() called ${List<Int>(3, {2})}")
+            Log.d("이거", "onCreate() called ${List<Int>(3, {2}).contains(2)}")
         }
     }
 
@@ -102,8 +108,8 @@ class MainActivity : AppCompatActivity() {
 
         binding.bottomNavigation.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.draw -> {
-                    navController.navigate(R.id.draw, null)
+                R.id.drawDialog -> {
+                    DrawDialog().show(supportFragmentManager.beginTransaction(),"")
                 }
 
                 R.id.home -> {
@@ -118,7 +124,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.bottomNavigation.setOnItemReselectedListener { item ->
-            if (item.itemId == R.id.draw) navController.navigate(R.id.draw, null)
+            if (item.itemId == R.id.drawDialog) DrawDialog().show(supportFragmentManager.beginTransaction(),"")
         }
 
         binding.bottomNavigation.itemIconTintList = null

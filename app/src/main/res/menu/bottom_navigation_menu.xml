@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/draw"
+        android:id="@+id/drawDialog"
         android:icon="@drawable/monster_ball_200"
         android:title="뽑기"
         app:showAsAction="always"></item>

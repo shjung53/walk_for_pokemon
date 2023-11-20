@@ -10,6 +10,7 @@ import com.google.android.gms.fitness.HistoryClient
 import com.ssafy.walkforpokemon.data.dataclass.User
 import com.ssafy.walkforpokemon.domain.health.FetchStepCountUseCase
 import com.ssafy.walkforpokemon.domain.health.InitHealthClientUseCase
+import com.ssafy.walkforpokemon.domain.user.DrawPokemonUseCase
 import com.ssafy.walkforpokemon.domain.user.FetchUserIdUseCase
 import com.ssafy.walkforpokemon.domain.user.FetchUserUseCase
 import com.ssafy.walkforpokemon.domain.user.RegisterUserUseCase
@@ -26,6 +27,7 @@ class MainViewModel @Inject constructor(
     private val registerUserUseCase: RegisterUserUseCase,
     private val initHealthClientUseCase: InitHealthClientUseCase,
     private val fetchStepCountUseCase: FetchStepCountUseCase,
+    private val drawPokemonUseCase: DrawPokemonUseCase,
 ) :
     ViewModel() {
 
@@ -74,6 +76,22 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    fun drawPokemon(pokemonId: Int) {
+        val myNewPokemonList = mutableListOf<Int>()
+        user.value?.let { myNewPokemonList.addAll(it.myPokemons) }
+        myNewPokemonList.add(pokemonId)
+        viewModelScope.launch {
+            userId.value?.let { userId ->
+                drawPokemonUseCase.invoke(userId, myNewPokemonList).fold(
+                    onSuccess = {
+                        fetchUser(userId)
+                    },
+                    onFailure = {},
+                )
+            }
+        }
+    }
+
     fun initHealthClient(healthClient: HistoryClient) {
         viewModelScope.launch {
             initHealthClientUseCase.invoke(healthClient).fold(
@@ -85,7 +103,7 @@ class MainViewModel @Inject constructor(
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun fetchStepCount() {
+    fun refreshStepCount() {
         viewModelScope.launch {
             fetchStepCountUseCase.invoke().fold(
                 onSuccess = {},

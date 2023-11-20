@@ -1,5 +1,6 @@
 package com.ssafy.walkforpokemon.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,6 +11,8 @@ import com.ssafy.walkforpokemon.domain.pokemon.FetchUserPokemonListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+private const val TAG = "DictionaryViewModel"
 
 @HiltViewModel
 class DictionaryViewModel @Inject constructor(
@@ -25,6 +28,7 @@ class DictionaryViewModel @Inject constructor(
             fetchUserPokemonListUseCase.invoke(user).fold(
                 onSuccess = {
                     _pokemonList.value = it
+                    Log.d(TAG, "fetchUserPokemonList() called: $it")
                 },
                 onFailure = {},
             )

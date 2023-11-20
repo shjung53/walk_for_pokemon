@@ -6,14 +6,24 @@
     app:startDestination="@id/home">
 
     <fragment
-        android:id="@+id/draw"
+        android:id="@+id/drawFragment"
+        android:name="com.ssafy.walkforpokemon.DrawFragment"
+        android:label="fragment_bottom0"
+        tools:layout="@layout/fragment_draw">
+        <action
+            android:id="@+id/action_drawFragment_to_home"
+            app:destination="@id/home" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/drawDialog"
         android:name="com.ssafy.walkforpokemon.dialogs.DrawDialog"
         android:label="fragment_bottom0"
-        tools:layout="@layout/dialog_draw">
+        tools:layout="@layout/fragment_draw">
         <action
-            android:id="@+id/draw_pokemon_dialog_action"
-            />
-
+            android:id="@+id/action_drawDialog_to_drawFragment"
+            app:destination="@id/drawFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment

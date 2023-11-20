@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -20,7 +21,17 @@ class DictionaryAdapter(val context: Context, var itemList: List<Pokemon>) :
             binding.number.text = "no.${data.id}"
             binding.name.text = data.nameKorean
             Glide.with(context).load(data.imageOfficial).into(binding.image)
-            if (!data.isActive) binding.image.setColorFilter(Color.GRAY, PorterDuff.Mode.SRC_ATOP)
+            val typeColor = context.resources.getIdentifier(
+                "type_${data.type[0]}",
+                "color",
+                context.packageName,
+            )
+            if (!data.isActive) {
+                binding.image.setColorFilter(Color.GRAY, PorterDuff.Mode.SRC_ATOP)
+            } else {
+                binding.card.strokeColor = context.getColor(typeColor)
+            }
+            if (data.isMain) binding.medal.visibility = View.VISIBLE
         }
     }
 
@@ -37,9 +48,7 @@ class DictionaryAdapter(val context: Context, var itemList: List<Pokemon>) :
         holder.bind(itemList[position])
     }
 
-    override fun getItemCount(): Int {
-        return itemList.count()
-    }
+    override fun getItemCount() = itemList.size
 
     interface onItemClickListener {
         fun onItemClick(position: Int)
