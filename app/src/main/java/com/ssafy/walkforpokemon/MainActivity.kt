@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -15,7 +14,6 @@ import com.google.android.gms.fitness.Fitness
 import com.google.android.gms.fitness.FitnessOptions
 import com.google.android.gms.fitness.data.DataType
 import com.ssafy.walkforpokemon.databinding.ActivityMainBinding
-import com.ssafy.walkforpokemon.dialogs.DrawDialog
 import com.ssafy.walkforpokemon.viewmodels.DictionaryViewModel
 import com.ssafy.walkforpokemon.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,7 +23,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(), OnSuccessDrawListener {
+class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var fitnessOptions: FitnessOptions
@@ -84,51 +82,6 @@ class MainActivity : AppCompatActivity(), OnSuccessDrawListener {
         // 네비게이션 컨트롤러
         val navController = navHostFragment.navController
 
-        val homeTransitionAnim = NavOptions.Builder()
-            .setLaunchSingleTop(true)
-            .setEnterAnim(R.anim.slide_in_right)
-            .setExitAnim(R.anim.slide_out_left)
-            .setPopEnterAnim(R.anim.slide_in_left)
-            .setPopExitAnim(R.anim.slide_out_right)
-            .setPopUpTo(navController.graph.startDestinationId, false)
-            .build()
-
-        val dictionaryTransitionOption = NavOptions.Builder()
-            .setLaunchSingleTop(true)
-            .setEnterAnim(R.anim.slide_in_right)
-            .setExitAnim(R.anim.slide_out_left)
-            .setPopEnterAnim(R.anim.slide_in_left)
-            .setPopExitAnim(R.anim.slide_out_right)
-            .setPopUpTo(navController.graph.startDestinationId, false)
-            .build()
-
-        binding.bottomNavigation.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.drawDialog -> {
-                    navController.navigate(R.id.drawDialog, null)
-                }
-
-                R.id.home -> {
-                    navController.navigate(R.id.home, null, homeTransitionAnim)
-                }
-
-                R.id.dictioniary -> {
-                    navController.navigate(R.id.dictioniary, null, dictionaryTransitionOption)
-                }
-            }
-            true
-        }
-
-        binding.bottomNavigation.setOnItemReselectedListener { item ->
-            if (item.itemId == R.id.drawDialog) DrawDialog().show(
-                supportFragmentManager.beginTransaction(),
-                ""
-            )
-        }
-
-        binding.bottomNavigation.itemIconTintList = null
-
-        binding.bottomNavigation.selectedItemId = R.id.home
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -153,12 +106,4 @@ class MainActivity : AppCompatActivity(), OnSuccessDrawListener {
         val account = GoogleSignIn.getAccountForExtension(this, fitnessOptions)
         mainViewModel.initHealthClient(Fitness.getHistoryClient(this, account))
     }
-
-    override fun onSuccess(pokemonId: Int) {
-        supportFragmentManager.beginTransaction().add(binding.navigationHost.id, DrawFragment().newInstance(pokemonId)).commitAllowingStateLoss()
-    }
-}
-
-interface OnSuccessDrawListener {
-    fun onSuccess(pokemonId: Int)
 }
