@@ -1,6 +1,5 @@
 package com.ssafy.walkforpokemon
 
-import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
@@ -26,7 +25,7 @@ class LoginActivity : AppCompatActivity() {
         loginViewModel.loginStatus.observe(this) {
             if (it == LoginStatus.Login) {
                 val intent = Intent(this, MainActivity::class.java)
-                startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+                startActivity(intent)
                 finish()
             }
         }

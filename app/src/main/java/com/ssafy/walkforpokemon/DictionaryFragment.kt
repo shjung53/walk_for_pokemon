@@ -43,7 +43,7 @@ class DictionaryFragment : Fragment() {
 
         setAchievementText()
 
-        dictionaryViewModel.pokemonList.observe(requireActivity()) {
+        dictionaryViewModel.myPokemonList.observe(requireActivity()) {
             dictionaryAdapter.itemList = it
             dictionaryAdapter.notifyDataSetChanged()
         }
@@ -56,7 +56,7 @@ class DictionaryFragment : Fragment() {
     private fun setAchievementText() {
         val builder = SpannableStringBuilder()
         val text1 = "완성도 "
-        val now = "${mainViewModel.user.value?.myPokemons?.size ?: 0}"
+        val now = "${mainViewModel.myPokemonSet.value?.size ?: 0}"
         val total = " / ${dictionaryViewModel.pokemonList.value?.size ?: 151}"
 
         val startIndex = text1.length
@@ -77,7 +77,7 @@ class DictionaryFragment : Fragment() {
     private fun setRecyclerViewAdapter() {
         dictionaryAdapter = DictionaryAdapter(
             requireContext(),
-            dictionaryViewModel.pokemonList.value ?: emptyList(),
+            dictionaryViewModel.myPokemonList.value ?: emptyList(),
         )
         binding.recyclerview.adapter = dictionaryAdapter
 

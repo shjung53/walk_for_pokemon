@@ -11,6 +11,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.fitness.Fitness
 import com.google.android.gms.fitness.FitnessOptions
 import com.google.android.gms.fitness.data.DataType
+import com.ssafy.walkforpokemon.data.dataclass.User
 import com.ssafy.walkforpokemon.databinding.ActivityMainBinding
 import com.ssafy.walkforpokemon.viewmodels.DictionaryViewModel
 import com.ssafy.walkforpokemon.viewmodels.MainViewModel
@@ -34,20 +35,16 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        CoroutineScope(Dispatchers.Main).launch {
-            withContext(Dispatchers.Main) {
+        CoroutineScope(Dispatchers.IO).launch {
+            withContext(Dispatchers.IO) {
                 createHealthClient()
             }
         }
-
+        dictionaryViewModel.initPokemonList()
         mainViewModel.fetchUserId()
 
-        mainViewModel.userId.observe(this) {
-            mainViewModel.fetchUser(it)
-        }
-
-        mainViewModel.user.observe(this) {
-            dictionaryViewModel.fetchUserPokemonList(it)
+        mainViewModel.myPokemonSet.observe(this) {
+            dictionaryViewModel.updateUserPokemonList(mainViewModel.user.value ?: User(""), it)
         }
     }
 

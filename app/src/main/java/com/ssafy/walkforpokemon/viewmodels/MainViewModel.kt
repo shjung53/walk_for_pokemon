@@ -37,11 +37,18 @@ class MainViewModel @Inject constructor(
     private var _user: MutableLiveData<User> = MutableLiveData(User(""))
     val user get() = _user
 
+    private var _myPokemonSet: MutableLiveData<MutableSet<Int>> =
+        MutableLiveData(mutableSetOf<Int>())
+    val myPokemonSet get() = _myPokemonSet
+
     fun fetchUserId() {
         viewModelScope.launch {
             withContext(Dispatchers.Main) {
                 fetchUserIdUseCase.invoke().fold(
-                    onSuccess = { _userId.value = it },
+                    onSuccess = {
+                        _userId.value = it
+                        fetchUser(it)
+                    },
                     onFailure = {},
                 )
             }
@@ -49,21 +56,22 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun fetchUser(id: String) {
-        viewModelScope.launch {
-            fetchUserUseCase.invoke(id).fold(
-                onSuccess = { result ->
-                    if (result.id.isEmpty()) {
-                        registerUser(id)
-                    } else {
-                        _user.value = result
-                    }
-                },
-                onFailure = { throwable ->
-                    Log.d("fetchUser", throwable.message.toString())
-                },
-            )
-        }
+    private suspend fun fetchUser(id: String) {
+        fetchUserUseCase.invoke(id).fold(
+            onSuccess = { result ->
+                if (result.id.isEmpty()) {
+                    registerUser(id)
+                } else {
+                    _user.value = result
+                    val newSet = mutableSetOf<Int>()
+                    newSet.addAll(result.myPokemons)
+                    _myPokemonSet.value = newSet
+                }
+            },
+            onFailure = { throwable ->
+                Log.d("fetchUser", throwable.message.toString())
+            },
+        )
     }
 
     private fun registerUser(id: String) {

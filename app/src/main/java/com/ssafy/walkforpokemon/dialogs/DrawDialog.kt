@@ -9,6 +9,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.ssafy.walkforpokemon.R
+import com.ssafy.walkforpokemon.data.dataclass.User
 import com.ssafy.walkforpokemon.databinding.DialogDrawConfirmBinding
 import com.ssafy.walkforpokemon.viewmodels.DictionaryViewModel
 import com.ssafy.walkforpokemon.viewmodels.MainViewModel
@@ -53,12 +54,15 @@ class DrawDialog : DialogFragment() {
             val newPokemonId = getNewPokemonId()
             mainViewModel.drawPokemon(newPokemonId)
 
-            mainViewModel.user.observe(this) {
+            mainViewModel.myPokemonSet.observe(this) {
                 lifecycleScope.launch {
-                    withContext(Dispatchers.Default) {
-                        dictionaryViewModel.fetchUserPokemonList(it)
+                    withContext(Dispatchers.Main) {
+                        dictionaryViewModel.updateUserPokemonList(
+                            mainViewModel.user.value ?: User(""),
+                            mainViewModel.myPokemonSet.value ?: mutableSetOf(),
+                        )
                     }
-                    if (it.myPokemons.contains(newPokemonId)) {
+                    if (it.contains(newPokemonId)) {
                         val action = DrawDialogDirections.actionDrawDialogToDrawFragment(
                             newPokemonId,
                         )
