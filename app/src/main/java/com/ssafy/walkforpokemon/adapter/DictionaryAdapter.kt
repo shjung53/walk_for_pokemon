@@ -6,13 +6,15 @@ import android.graphics.PorterDuff
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.ssafy.walkforpokemon.data.dataclass.Pokemon
 import com.ssafy.walkforpokemon.databinding.ItemDictionaryBinding
 
-class DictionaryAdapter(val context: Context, var itemList: List<Pokemon>) :
-    RecyclerView.Adapter<DictionaryAdapter.DictionaryViewHolder>() {
+class DictionaryAdapter(private val context: Context, private val itemList: List<Pokemon>) :
+    ListAdapter<Pokemon, DictionaryAdapter.DictionaryViewHolder>(PokemonComparator) {
 
     inner class DictionaryViewHolder(private val binding: ItemDictionaryBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -68,5 +70,15 @@ class DictionaryAdapter(val context: Context, var itemList: List<Pokemon>) :
 
     fun setOnItemClickListener(itemClickListener: OnItemClickListener) {
         this.itemClickListener = itemClickListener
+    }
+
+    companion object PokemonComparator : DiffUtil.ItemCallback<Pokemon>() {
+        override fun areItemsTheSame(oldItem: Pokemon, newItem: Pokemon): Boolean {
+            return oldItem == newItem
+        }
+
+        override fun areContentsTheSame(oldItem: Pokemon, newItem: Pokemon): Boolean {
+            return oldItem.isActive == newItem.isActive && oldItem.isMain == newItem.isMain
+        }
     }
 }

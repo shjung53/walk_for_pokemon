@@ -159,11 +159,10 @@ class DrawFragment() : Fragment() {
         })
     }
 
-    fun newInstance(pokemonId: Int): DrawFragment {
-        val args = Bundle()
-        args.putInt("pokemonId", pokemonId)
-        val fragment = DrawFragment()
-        fragment.arguments = args
-        return fragment
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
+
+    fun newInstance(): DrawFragment = DrawFragment()
 }
