@@ -3,22 +3,33 @@ package com.ssafy.walkforpokemon.adapter
 import android.content.Context
 import android.graphics.Color
 import android.graphics.PorterDuff
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.ssafy.walkforpokemon.data.dataclass.Pokemon
 import com.ssafy.walkforpokemon.databinding.ItemDictionaryBinding
 
-class DictionaryAdapter(private val context: Context, private val itemList: List<Pokemon>) :
-    ListAdapter<Pokemon, DictionaryAdapter.DictionaryViewHolder>(PokemonComparator) {
+private const val TAG = "싸피"
+
+class DictionaryAdapter(private val context: Context, private var itemList: List<Pokemon>) :
+    RecyclerView.Adapter<DictionaryAdapter.DictionaryViewHolder>() {
+
+    interface OnItemClickListener {
+        fun onClick(pokemon: Pokemon)
+    }
+
+    private lateinit var itemClickListener: OnItemClickListener
+
+    fun setOnItemClickListener(itemClickListener: OnItemClickListener) {
+        this.itemClickListener = itemClickListener
+    }
 
     inner class DictionaryViewHolder(private val binding: ItemDictionaryBinding) :
         RecyclerView.ViewHolder(binding.root) {
-
         fun bind(data: Pokemon) {
             binding.number.text = "no.${data.id}"
             binding.name.text = data.nameKorean
@@ -56,29 +67,37 @@ class DictionaryAdapter(private val context: Context, private val itemList: List
         return DictionaryViewHolder(binding)
     }
 
+    override fun getItemCount(): Int = itemList.size
+
     override fun onBindViewHolder(holder: DictionaryAdapter.DictionaryViewHolder, position: Int) {
+        Log.d(
+            TAG,
+            "bind() called with: data = ${itemList[position].id}, ${itemList[position].isMain}",
+        )
         holder.bind(itemList[position])
     }
 
-    override fun getItemCount() = itemList.size
-
-    interface OnItemClickListener {
-        fun onClick(pokemon: Pokemon)
+    fun setDataList(newItemList: List<Pokemon>) {
+        val diffResult = DiffUtil.calculateDiff(PokemonDiffUtilCallback(itemList, newItemList))
+        itemList = newItemList
+        diffResult.dispatchUpdatesTo(this) // RecyclerView에 변경 사항 알림
     }
 
-    private lateinit var itemClickListener: OnItemClickListener
+    inner class PokemonDiffUtilCallback(
+        private val oldList: List<Pokemon>,
+        private val newList: List<Pokemon>,
+    ) : DiffUtil.Callback() {
+        override fun getOldListSize(): Int = oldList.size
 
-    fun setOnItemClickListener(itemClickListener: OnItemClickListener) {
-        this.itemClickListener = itemClickListener
-    }
+        override fun getNewListSize(): Int = newList.size
 
-    companion object PokemonComparator : DiffUtil.ItemCallback<Pokemon>() {
-        override fun areItemsTheSame(oldItem: Pokemon, newItem: Pokemon): Boolean {
-            return oldItem == newItem
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return oldList[oldItemPosition].id == newList[newItemPosition].id
         }
 
-        override fun areContentsTheSame(oldItem: Pokemon, newItem: Pokemon): Boolean {
-            return oldItem.isActive == newItem.isActive && oldItem.isMain == newItem.isMain
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return oldList[oldItemPosition].isActive == newList[newItemPosition].isActive &&
+                oldList[oldItemPosition].isMain == newList[newItemPosition].isMain
         }
     }
 }

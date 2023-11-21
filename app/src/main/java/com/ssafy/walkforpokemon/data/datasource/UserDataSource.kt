@@ -153,4 +153,40 @@ class UserDataSource @Inject constructor() {
         }
         return result
     }
+
+    suspend fun updateMainPokemon(
+        user: User,
+    ): Result<SuccessOrFailure> {
+        var documentId = ""
+        Firebase.firestore.collection("user").whereEqualTo("id", user.id).get()
+            .addOnSuccessListener { result ->
+                for (document in result) {
+                    documentId = document.id
+                }
+            }.await()
+
+        val result = suspendCancellableCoroutine { continuation ->
+            Firebase.firestore.collection("user").document(documentId).update(
+                "mainPokemon",
+                user.mainPokemon,
+            ).addOnSuccessListener { documentReference ->
+                continuation.resume(Result.success(SuccessOrFailure.Success), null)
+                Log.d(
+                    TAG,
+                    "updateMainPokemon() called with: documentReference = $documentReference",
+                )
+            }.addOnFailureListener { e ->
+                continuation.resume(
+                    Result.failure(
+                        Exception(
+                            errorDescription ?: "unknown error",
+                        ),
+                    ),
+                    null,
+                )
+                Log.d(TAG, "updateMainPokemon() called with: e = $e")
+            }
+        }
+        return result
+    }
 }

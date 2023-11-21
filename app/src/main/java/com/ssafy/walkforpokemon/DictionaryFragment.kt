@@ -44,7 +44,7 @@ class DictionaryFragment : Fragment() {
         setAchievementText()
 
         dictionaryViewModel.myPokemonList.observe(requireActivity()) {
-            dictionaryAdapter.submitList(it)
+            dictionaryAdapter.setDataList(it)
         }
 
         binding.closeButton.setOnClickListener {

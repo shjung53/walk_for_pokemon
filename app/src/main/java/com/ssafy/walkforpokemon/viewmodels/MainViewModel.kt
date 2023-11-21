@@ -10,6 +10,7 @@ import com.google.android.gms.fitness.HistoryClient
 import com.ssafy.walkforpokemon.data.dataclass.User
 import com.ssafy.walkforpokemon.domain.health.FetchStepCountUseCase
 import com.ssafy.walkforpokemon.domain.health.InitHealthClientUseCase
+import com.ssafy.walkforpokemon.domain.pokemon.UpdateMainPokemonUseCase
 import com.ssafy.walkforpokemon.domain.user.DrawPokemonUseCase
 import com.ssafy.walkforpokemon.domain.user.FetchUserIdUseCase
 import com.ssafy.walkforpokemon.domain.user.FetchUserUseCase
@@ -28,11 +29,12 @@ class MainViewModel @Inject constructor(
     private val initHealthClientUseCase: InitHealthClientUseCase,
     private val fetchStepCountUseCase: FetchStepCountUseCase,
     private val drawPokemonUseCase: DrawPokemonUseCase,
+    private val updateMainPokemonUseCase: UpdateMainPokemonUseCase,
 ) :
     ViewModel() {
 
     private var _userId: MutableLiveData<String> = MutableLiveData()
-    val userId get() = _userId
+    private val userId get() = _userId
 
     private var _user: MutableLiveData<User> = MutableLiveData(User(""))
     val user get() = _user
@@ -40,6 +42,10 @@ class MainViewModel @Inject constructor(
     private var _myPokemonSet: MutableLiveData<MutableSet<Int>> =
         MutableLiveData(mutableSetOf<Int>())
     val myPokemonSet get() = _myPokemonSet
+
+    private var _mainPokemon: MutableLiveData<Int> = MutableLiveData(0)
+
+    val mainPokemon get() = _mainPokemon
 
     fun fetchUserId() {
         viewModelScope.launch {
@@ -63,9 +69,15 @@ class MainViewModel @Inject constructor(
                     registerUser(id)
                 } else {
                     _user.value = result
-                    val newSet = mutableSetOf<Int>()
-                    newSet.addAll(result.myPokemons)
-                    _myPokemonSet.value = newSet
+                    if (result.myPokemons.size != myPokemonSet.value?.size) {
+                        val newSet = mutableSetOf<Int>()
+                        newSet.addAll(result.myPokemons)
+                        _myPokemonSet.value = newSet
+                    }
+
+                    if (result.mainPokemon != mainPokemon.value) {
+                        _mainPokemon.value = result.mainPokemon
+                    }
                 }
             },
             onFailure = { throwable ->
@@ -93,6 +105,20 @@ class MainViewModel @Inject constructor(
                 drawPokemonUseCase.invoke(userId, myNewPokemonList).fold(
                     onSuccess = {
                         fetchUser(userId)
+                    },
+                    onFailure = {},
+                )
+            }
+        }
+    }
+
+    fun updateMainPokemon(pokemonId: Int) {
+        viewModelScope.launch {
+            user.value?.let { user ->
+                val newUser = user.copy(mainPokemon = pokemonId)
+                updateMainPokemonUseCase.invoke(newUser).fold(
+                    onSuccess = {
+                        fetchUser(user.id)
                     },
                     onFailure = {},
                 )

@@ -1,21 +1,30 @@
 package com.ssafy.walkforpokemon
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavOptions
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.ssafy.walkforpokemon.databinding.FragmentHomeBinding
+import com.ssafy.walkforpokemon.viewmodels.DictionaryViewModel
+import com.ssafy.walkforpokemon.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
+
+private const val TAG = "HomeFragment"
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
+
+    private val mainViewModel: MainViewModel by activityViewModels()
+    private val dictionaryViewModel: DictionaryViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,8 +38,16 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.drawBtn.setOnClickListener {
-            findNavController().navigate(R.id.drawDialog)
+        mainViewModel.mainPokemon.observe(requireActivity()) { mainPokemonId ->
+            Log.d(TAG, "onViewCreated() called with: mainPokemonId = $mainPokemonId")
+            dictionaryViewModel.pokemonList.value?.let { it ->
+                Log.d(TAG, "onViewCreated() called")
+                val mainPokemonImage = it.find { pokemon -> mainPokemonId == pokemon.id }?.image3D
+                Log.d(TAG, "$mainPokemonImage")
+                Glide.with(requireActivity()).load(
+                    mainPokemonImage,
+                ).into(binding.mainPokemonImage)
+            }
         }
 
         /* TODO
@@ -39,7 +56,15 @@ class HomeFragment : Fragment() {
         binding.nowMileage.text = String.format("%,d", 10) // 여기 집어넣기
         binding.nowSteps.text = String.format("%,d", 10000000)
 
-        val navController = binding.root.findNavController()
+        setNavigation()
+    }
+
+    private fun setNavigation() {
+        val navController = findNavController()
+
+        binding.drawBtn.setOnClickListener {
+            navController.navigate(R.id.drawDialog)
+        }
 
         val dictionaryTransitionOption = NavOptions.Builder()
             .setLaunchSingleTop(true)
@@ -51,13 +76,8 @@ class HomeFragment : Fragment() {
             .build()
 
         binding.dictionaryBtn.setOnClickListener {
-            navController.navigate(R.id.dictionary, null, dictionaryTransitionOption)
+            findNavController().navigate(R.id.dictionary, null, dictionaryTransitionOption)
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     companion object {

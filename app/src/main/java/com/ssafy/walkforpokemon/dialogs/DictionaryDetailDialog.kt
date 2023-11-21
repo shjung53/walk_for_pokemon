@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.ssafy.walkforpokemon.DrawFragmentArgs
@@ -16,14 +17,14 @@ import com.ssafy.walkforpokemon.R
 import com.ssafy.walkforpokemon.data.dataclass.Pokemon
 import com.ssafy.walkforpokemon.databinding.DialogDictionaryDetailBinding
 import com.ssafy.walkforpokemon.viewmodels.DictionaryViewModel
-
-private const val TAG = "DictionaryDetailDialog_싸피"
+import com.ssafy.walkforpokemon.viewmodels.MainViewModel
 
 class DictionaryDetailDialog : DialogFragment() {
 
     private var _binding: DialogDictionaryDetailBinding? = null
     private val binding: DialogDictionaryDetailBinding get() = _binding!!
     private val dictionaryViewModel: DictionaryViewModel by activityViewModels()
+    private val mainViewModel: MainViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +45,7 @@ class DictionaryDetailDialog : DialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         val args: DrawFragmentArgs by navArgs()
         val pokemonId: Int = args.pokemonId
-        val pokemon = dictionaryViewModel.pokemonList.value?.find { it.id == pokemonId }
+        val pokemon = dictionaryViewModel.myPokemonList.value?.find { it.id == pokemonId }
 
         pokemon?.let {
             Glide.with(requireActivity()).load(it.imageOfficial).into(binding.pokemonImage)
@@ -69,6 +70,11 @@ class DictionaryDetailDialog : DialogFragment() {
 
         binding.root.setOnClickListener {
             this.dismiss()
+        }
+
+        binding.setMainPokemonButton.setOnClickListener {
+            mainViewModel.updateMainPokemon(pokemonId)
+            findNavController().navigateUp()
         }
     }
 
