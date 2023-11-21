@@ -75,7 +75,7 @@ class UserDataSource @Inject constructor() {
                             usedMileage = document.data["usedMileage"].toString().toInt(),
                             currentMileage = document.data["currentMileage"].toString().toInt(),
                             addedMileage = document.data["addedMileage"].toString().toInt(),
-                            myPokemons = document.data["myPokemons"] as List<Int>,
+                            myPokemons = document.data["myPokemons"].let { it as List<Long>}.map { it.toInt() },
                             mainPokemon = document.data["mainPokemon"].toString().toInt(),
                         )
                     }

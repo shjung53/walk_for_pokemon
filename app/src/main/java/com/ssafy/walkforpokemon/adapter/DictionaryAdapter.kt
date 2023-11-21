@@ -3,6 +3,7 @@ package com.ssafy.walkforpokemon.adapter
 import android.content.Context
 import android.graphics.Color
 import android.graphics.PorterDuff
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,10 +29,16 @@ class DictionaryAdapter(val context: Context, var itemList: List<Pokemon>) :
             )
             if (!data.isActive) {
                 binding.image.setColorFilter(Color.GRAY, PorterDuff.Mode.SRC_ATOP)
+                binding.card.strokeColor = Color.GRAY
             } else {
+                binding.image.colorFilter = null
                 binding.card.strokeColor = context.getColor(typeColor)
             }
-            if (data.isMain) binding.medal.visibility = View.VISIBLE
+            if (data.isMain) {
+                binding.medal.visibility = View.VISIBLE
+            } else {
+                binding.medal.visibility = View.GONE
+            }
         }
     }
 

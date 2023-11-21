@@ -25,7 +25,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), OnSuccessDrawListener {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var fitnessOptions: FitnessOptions
@@ -53,10 +53,6 @@ class MainActivity : AppCompatActivity() {
 
         mainViewModel.user.observe(this) {
             dictionaryViewModel.fetchUserPokemonList(it)
-            Log.d("이거", "onCreate() called ${it.myPokemons}")
-            Log.d("이거", "onCreate() called ${it.myPokemons.contains(2)}")
-            Log.d("이거", "onCreate() called ${List<Int>(3, {2})}")
-            Log.d("이거", "onCreate() called ${List<Int>(3, {2}).contains(2)}")
         }
     }
 
@@ -109,7 +105,7 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavigation.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.drawDialog -> {
-                    DrawDialog().show(supportFragmentManager.beginTransaction(),"")
+                    navController.navigate(R.id.drawDialog, null)
                 }
 
                 R.id.home -> {
@@ -124,7 +120,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.bottomNavigation.setOnItemReselectedListener { item ->
-            if (item.itemId == R.id.drawDialog) DrawDialog().show(supportFragmentManager.beginTransaction(),"")
+            if (item.itemId == R.id.drawDialog) DrawDialog().show(
+                supportFragmentManager.beginTransaction(),
+                ""
+            )
         }
 
         binding.bottomNavigation.itemIconTintList = null
@@ -154,4 +153,12 @@ class MainActivity : AppCompatActivity() {
         val account = GoogleSignIn.getAccountForExtension(this, fitnessOptions)
         mainViewModel.initHealthClient(Fitness.getHistoryClient(this, account))
     }
+
+    override fun onSuccess(pokemonId: Int) {
+        supportFragmentManager.beginTransaction().add(binding.navigationHost.id, DrawFragment().newInstance(pokemonId)).commitAllowingStateLoss()
+    }
+}
+
+interface OnSuccessDrawListener {
+    fun onSuccess(pokemonId: Int)
 }

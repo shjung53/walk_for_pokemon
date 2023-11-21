@@ -7,7 +7,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.activityViewModels
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -19,13 +20,16 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.signature.ObjectKey
 import com.ssafy.walkforpokemon.databinding.FragmentDrawBinding
+import com.ssafy.walkforpokemon.viewmodels.DictionaryViewModel
 
-class DrawFragment() : Fragment() {
+class DrawFragment() : DialogFragment() {
 
     private val requestOptions = RequestOptions()
 
     private var _binding: FragmentDrawBinding? = null
     private val binding : FragmentDrawBinding get() = _binding!!
+
+    private val dictionaryViewModel : DictionaryViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,6 +42,42 @@ class DrawFragment() : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        this.isCancelable = false
+
+        val pokemonId = arguments?.getInt("pokemonId")
+
+        val pokemon = dictionaryViewModel.pokemonList.value?.find { it.id == pokemonId }
+
+        pokemon?.let { it ->
+            binding.pokemonName.text = it.nameKorean
+            binding.type1.text =it.type[0]
+            val type1Color = requireActivity().resources.getIdentifier(
+                "type_${it.type[0]}",
+                "color",
+                requireActivity().packageName,
+            )
+            binding.type1.setBackgroundResource(type1Color)
+
+            if (it.type.size == 1) {
+                binding.type2.visibility = View.GONE
+            } else {
+                binding.type2.text = it.type[1]
+                val type2Color = requireActivity().resources.getIdentifier(
+                    "type_${it.type[1]}",
+                    "color",
+                    requireActivity().packageName,
+                )
+                binding.type2.setBackgroundResource(type2Color)
+            }
+
+            Glide.with(requireActivity()).load(it.imageOfficial)
+                .into(binding.pokemonImage)
+        }
+        setDrawAnimation()
+    }
+
+    private fun setDrawAnimation() {
         requestOptions.diskCacheStrategy(DiskCacheStrategy.NONE)
         requestOptions.skipMemoryCache(false)
         requestOptions.signature(ObjectKey(System.currentTimeMillis()))
@@ -110,31 +150,13 @@ class DrawFragment() : Fragment() {
             override fun onAnimationRepeat(animation: Animator) {
             }
         })
+    }
 
-//        binding.drawPokemonName.text = pokeDataList[resultId].nameKorean
-//        binding.type1Btn.text = pokeDataList[resultId].type[0]
-//        val resource1 = context.resources.getIdentifier(
-//            "type_${pokeDataList[resultId].type[0]}",
-//            "color",
-//            context.packageName,
-//        )
-//        Log.d(TAG, "letsDraw: ${pokeDataList[resultId].type}, $resource1")
-//        binding.type1Btn.setBackgroundResource(resource1)
-//
-//        if (pokeDataList[resultId].type.size == 1) {
-//            binding.type2Btn.visibility = View.GONE
-//        } else {
-//            binding.type2Btn.text = pokeDataList[resultId].type[1]
-//            val resource2 = context.resources.getIdentifier(
-//                "type_${pokeDataList[resultId].type[1]}",
-//                "color",
-//                context.packageName,
-//            )
-//            Log.d(TAG, "letsDraw: $resource2")
-//            binding.type2Btn.setBackgroundResource(resource2)
-//        }
-//
-//        Glide.with(context).load(pokeDataList[resultId].imageOfficial)
-//            .into(binding.drawPokemonIV)
+    fun newInstance(pokemonId: Int): DrawFragment{
+        val args = Bundle()
+        args.putInt("pokemonId", pokemonId)
+        val fragment = DrawFragment()
+        fragment.arguments = args
+        return fragment
     }
 }

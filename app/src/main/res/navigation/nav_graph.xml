@@ -10,8 +10,11 @@
         android:name="com.ssafy.walkforpokemon.DrawFragment"
         android:label="fragment_bottom0"
         tools:layout="@layout/fragment_draw">
+        <argument
+            android:name="pokemonId"
+            android:defaultValue="0" />
         <action
-            android:id="@+id/action_drawFragment_to_home"
+            android:id="@+id/action_drawFragment_to_home3"
             app:destination="@id/home" />
     </fragment>
 
@@ -22,8 +25,7 @@
         tools:layout="@layout/fragment_draw">
         <action
             android:id="@+id/action_drawDialog_to_drawFragment"
-            app:destination="@id/drawFragment"
-            app:popUpToInclusive="true" />
+            app:destination="@id/drawFragment" />
     </fragment>
 
     <fragment
@@ -34,6 +36,9 @@
         <action
             android:id="@+id/action_home_to_dictioniary"
             app:destination="@id/dictioniary" />
+        <action
+            android:id="@+id/action_home_to_drawDialog3"
+            app:destination="@id/drawDialog" />
     </fragment>
     <fragment
         android:id="@+id/dictioniary"
