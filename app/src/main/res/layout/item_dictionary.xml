@@ -33,8 +33,8 @@
                     android:id="@+id/number"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/nanumbarungothic"
-                    android:textSize="8sp" />
+                    style="@style/samaco_12sp"
+                    />
 
                 <Space
                     android:layout_width="4dp"

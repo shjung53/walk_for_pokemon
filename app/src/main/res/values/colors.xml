@@ -11,6 +11,8 @@
     <color name="pokemon_blue">#2A75BB</color>
     <color name="draw_background">#FFA9A8AC</color>
     <color name="card_gray">#FF888888</color>
+    <color name="dialog_background_black">#54000000</color>
+    <color name="some">#96C864</color>
 
     <color name="type_normal">#a8a878</color>
     <color name="type_fire">#f08030</color>

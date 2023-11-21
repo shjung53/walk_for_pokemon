@@ -1,6 +1,5 @@
 package com.ssafy.walkforpokemon.dialogs
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +8,6 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.navOptions
 import com.ssafy.walkforpokemon.R
 import com.ssafy.walkforpokemon.databinding.DialogDrawConfirmBinding
 import com.ssafy.walkforpokemon.viewmodels.DictionaryViewModel
@@ -26,6 +24,11 @@ class DrawDialog : DialogFragment() {
     private val mainViewModel: MainViewModel by activityViewModels()
     private val dictionaryViewModel: DictionaryViewModel by activityViewModels()
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setStyle(STYLE_NORMAL, R.style.FullScreenDialog)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -40,8 +43,6 @@ class DrawDialog : DialogFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         this.isCancelable = false
-
-        binding.root.setBackgroundColor(Color.TRANSPARENT)
 
         binding.message.text = "1000 마일리지를 소모하여 뽑기를 진행하시겠습니까?"
 

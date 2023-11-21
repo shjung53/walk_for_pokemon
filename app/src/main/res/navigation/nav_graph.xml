@@ -34,19 +34,33 @@
         android:label="fragment_bottom1"
         tools:layout="@layout/fragment_home">
         <action
-            android:id="@+id/action_home_to_dictioniary"
-            app:destination="@id/dictioniary" />
+            android:id="@+id/action_home_to_dictionary"
+            app:destination="@id/dictionary" />
         <action
             android:id="@+id/action_home_to_drawDialog3"
             app:destination="@id/drawDialog" />
     </fragment>
     <fragment
-        android:id="@+id/dictioniary"
+        android:id="@+id/dictionary"
         android:name="com.ssafy.walkforpokemon.DictionaryFragment"
         android:label="fragment_bottom2"
         tools:layout="@layout/fragment_dictionary">
         <action
-            android:id="@+id/action_dictioniary_to_home"
-            app:destination="@id/home"/>
+            android:id="@+id/action_dictionary_to_home"
+            app:destination="@id/home" />
+        <action
+            android:id="@+id/action_dictionary_to_dictionaryDetail"
+            app:destination="@id/dictionaryDetail" />
     </fragment>
+
+    <dialog
+        android:id="@+id/dictionaryDetail"
+        android:name="com.ssafy.walkforpokemon.dialogs.DictionaryDetailDialog">
+        <argument
+            android:name="pokemonId"
+            android:defaultValue="0" />
+        <action
+            android:id="@+id/action_dictionaryDetail_to_dictionary"
+            app:destination="@id/dictionary" />
+    </dialog>
 </navigation>

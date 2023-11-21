@@ -17,10 +17,6 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -34,7 +30,7 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.drawBtn.setOnClickListener {
-            findNavController().navigate(R.id.drawDialog, null)
+            findNavController().navigate(R.id.drawDialog)
         }
 
         /* TODO
@@ -55,7 +51,7 @@ class HomeFragment : Fragment() {
             .build()
 
         binding.dictionaryBtn.setOnClickListener {
-            navController.navigate(R.id.dictioniary, null, dictionaryTransitionOption)
+            navController.navigate(R.id.dictionary, null, dictionaryTransitionOption)
         }
     }
 
