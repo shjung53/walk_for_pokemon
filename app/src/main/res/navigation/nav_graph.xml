@@ -18,7 +18,7 @@
             app:destination="@id/home" />
     </fragment>
 
-    <fragment
+    <dialog
         android:id="@+id/drawDialog"
         android:name="com.ssafy.walkforpokemon.dialogs.DrawDialog"
         android:label="fragment_bottom0"
@@ -26,7 +26,7 @@
         <action
             android:id="@+id/action_drawDialog_to_drawFragment"
             app:destination="@id/drawFragment" />
-    </fragment>
+    </dialog>
 
     <fragment
         android:id="@+id/home"

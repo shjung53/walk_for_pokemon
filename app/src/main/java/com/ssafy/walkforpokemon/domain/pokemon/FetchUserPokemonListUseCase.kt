@@ -13,7 +13,7 @@ class FetchUserPokemonListUseCase @Inject constructor(
         val mainPokemon = user.mainPokemon
 
         pokemonRepository.fetchPokemons().fold(
-            onSuccess = {pokemonList ->
+            onSuccess = { pokemonList ->
                 val result =
                     pokemonList.map { pokemon ->
                         pokemon.copy(

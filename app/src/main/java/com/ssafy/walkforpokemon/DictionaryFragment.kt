@@ -51,7 +51,6 @@ class DictionaryFragment : Fragment() {
         binding.achievemnt.setOnClickListener {
             navController.navigateUp()
         }
-
     }
 
     override fun onDestroyView() {

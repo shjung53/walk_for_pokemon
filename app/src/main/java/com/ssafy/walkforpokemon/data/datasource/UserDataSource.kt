@@ -54,8 +54,7 @@ class UserDataSource @Inject constructor() {
         return result
     }
 
-    fun getLoginStatus() =
-        NaverIdLoginSDK.getState()
+    fun getLoginStatus() = NaverIdLoginSDK.getState()
 
     suspend fun fetchUserId(): Result<String> {
         val response = NaverUserService.getService()
@@ -75,7 +74,9 @@ class UserDataSource @Inject constructor() {
                             usedMileage = document.data["usedMileage"].toString().toInt(),
                             currentMileage = document.data["currentMileage"].toString().toInt(),
                             addedMileage = document.data["addedMileage"].toString().toInt(),
-                            myPokemons = document.data["myPokemons"].let { it as List<Long>}.map { it.toInt() },
+                            myPokemons = document.data["myPokemons"].let {
+                                it as List<Long>
+                            }.map { it.toInt() },
                             mainPokemon = document.data["mainPokemon"].toString().toInt(),
                         )
                     }
@@ -116,7 +117,10 @@ class UserDataSource @Inject constructor() {
         return result
     }
 
-    suspend fun updateUserPokemonList(userId: String, pokemonList: List<Int>): Result<SuccessOrFailure> {
+    suspend fun updateUserPokemonList(
+        userId: String,
+        pokemonList: List<Int>,
+    ): Result<SuccessOrFailure> {
         var documentId = ""
         Firebase.firestore.collection("user").whereEqualTo("id", userId).get()
             .addOnSuccessListener { result ->
@@ -126,24 +130,26 @@ class UserDataSource @Inject constructor() {
             }.await()
 
         val result = suspendCancellableCoroutine { continuation ->
-            Firebase.firestore.collection("user").document(documentId).update("myPokemons", pokemonList)
-                .addOnSuccessListener { documentReference ->
-                    continuation.resume(Result.success(SuccessOrFailure.Success), null)
-                    Log.d(
-                        TAG,
-                        "updateUserPokemonList() called with: documentReference = $documentReference"
-                    )
-                }.addOnFailureListener { e ->
-                    continuation.resume(
-                        Result.failure(
-                            Exception(
-                                errorDescription ?: "unknown error",
-                            ),
+            Firebase.firestore.collection("user").document(documentId).update(
+                "myPokemons",
+                pokemonList,
+            ).addOnSuccessListener { documentReference ->
+                continuation.resume(Result.success(SuccessOrFailure.Success), null)
+                Log.d(
+                    TAG,
+                    "updateUserPokemonList() called with: documentReference = $documentReference",
+                )
+            }.addOnFailureListener { e ->
+                continuation.resume(
+                    Result.failure(
+                        Exception(
+                            errorDescription ?: "unknown error",
                         ),
-                        null,
-                    )
-                    Log.d(TAG, "updateUserPokemonList() called with: e = $e")
-                }
+                    ),
+                    null,
+                )
+                Log.d(TAG, "updateUserPokemonList() called with: e = $e")
+            }
         }
         return result
     }

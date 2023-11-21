@@ -7,13 +7,14 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.ssafy.walkforpokemon.databinding.FragmentHomeBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
 
-    private lateinit var _binding: FragmentHomeBinding
+    private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,7 +25,7 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
+    ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -33,9 +34,7 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.drawBtn.setOnClickListener {
-            /* TODO
-                뽑기 dialog를 띄워봅시다.
-             */
+            findNavController().navigate(R.id.drawDialog, null)
         }
 
         /* TODO
@@ -58,15 +57,15 @@ class HomeFragment : Fragment() {
         binding.dictionaryBtn.setOnClickListener {
             navController.navigate(R.id.dictioniary, null, dictionaryTransitionOption)
         }
-
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 
     companion object {
-
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            HomeFragment().apply {
-            }
+        fun newInstance() = HomeFragment()
     }
 }

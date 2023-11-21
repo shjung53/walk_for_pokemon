@@ -8,7 +8,7 @@ class DrawPokemonUseCase @Inject constructor(private val userRepository: UserRep
     suspend operator fun invoke(userId: String, pokemonList: List<Int>): Result<SuccessOrFailure> {
         userRepository.addNewPokemon(userId, pokemonList).fold(
             onSuccess = { return Result.success(it) },
-            onFailure = { return Result.failure(it) }
+            onFailure = { return Result.failure(it) },
         )
     }
 }

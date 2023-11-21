@@ -7,8 +7,6 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.NavOptions
-import androidx.navigation.fragment.NavHostFragment
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.fitness.Fitness
 import com.google.android.gms.fitness.FitnessOptions
@@ -36,7 +34,6 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        initNavigation()
         CoroutineScope(Dispatchers.Main).launch {
             withContext(Dispatchers.Main) {
                 createHealthClient()
@@ -73,15 +70,6 @@ class MainActivity : AppCompatActivity() {
         } else {
             accessGoogleFit()
         }
-    }
-
-    private fun initNavigation() {
-        // 네비게이션 호스트
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.navigationHost) as NavHostFragment
-        // 네비게이션 컨트롤러
-        val navController = navHostFragment.navController
-
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

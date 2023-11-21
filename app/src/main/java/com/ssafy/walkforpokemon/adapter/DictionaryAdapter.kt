@@ -12,6 +12,8 @@ import com.bumptech.glide.Glide
 import com.ssafy.walkforpokemon.data.dataclass.Pokemon
 import com.ssafy.walkforpokemon.databinding.ItemDictionaryBinding
 
+private const val TAG = "DictionaryAdapter_싸피"
+
 class DictionaryAdapter(val context: Context, var itemList: List<Pokemon>) :
     RecyclerView.Adapter<DictionaryAdapter.DictionaryViewHolder>() {
 
@@ -22,6 +24,7 @@ class DictionaryAdapter(val context: Context, var itemList: List<Pokemon>) :
             binding.number.text = "no.${data.id}"
             binding.name.text = data.nameKorean
             Glide.with(context).load(data.imageOfficial).into(binding.image)
+            Log.d(TAG, "bind:${data.type[0]}")
             val typeColor = context.resources.getIdentifier(
                 "type_${data.type[0]}",
                 "color",

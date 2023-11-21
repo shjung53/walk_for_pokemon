@@ -7,8 +7,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -22,19 +24,19 @@ import com.bumptech.glide.signature.ObjectKey
 import com.ssafy.walkforpokemon.databinding.FragmentDrawBinding
 import com.ssafy.walkforpokemon.viewmodels.DictionaryViewModel
 
-class DrawFragment() : DialogFragment() {
+class DrawFragment() : Fragment() {
 
     private val requestOptions = RequestOptions()
 
     private var _binding: FragmentDrawBinding? = null
-    private val binding : FragmentDrawBinding get() = _binding!!
+    private val binding: FragmentDrawBinding get() = _binding!!
 
-    private val dictionaryViewModel : DictionaryViewModel by activityViewModels()
+    private val dictionaryViewModel: DictionaryViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentDrawBinding.inflate(inflater, container, false)
         return binding.root
@@ -43,15 +45,17 @@ class DrawFragment() : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        this.isCancelable = false
+        setDrawAnimation()
 
-        val pokemonId = arguments?.getInt("pokemonId")
+        val args: DrawFragmentArgs by navArgs()
+
+        val pokemonId = args.pokemonId
 
         val pokemon = dictionaryViewModel.pokemonList.value?.find { it.id == pokemonId }
 
         pokemon?.let { it ->
             binding.pokemonName.text = it.nameKorean
-            binding.type1.text =it.type[0]
+            binding.type1.text = it.type[0]
             val type1Color = requireActivity().resources.getIdentifier(
                 "type_${it.type[0]}",
                 "color",
@@ -74,7 +78,10 @@ class DrawFragment() : DialogFragment() {
             Glide.with(requireActivity()).load(it.imageOfficial)
                 .into(binding.pokemonImage)
         }
-        setDrawAnimation()
+
+        binding.confirmButton.setOnClickListener {
+            findNavController().navigate(R.id.home, null)
+        }
     }
 
     private fun setDrawAnimation() {
@@ -123,7 +130,7 @@ class DrawFragment() : DialogFragment() {
         val pokemonFadeIn = ObjectAnimator.ofFloat(binding.pokemonImage, "alpha", 0f, 1f)
         pokemonFadeIn.duration = 3000
         val pokeTextFadeIn = ObjectAnimator.ofFloat(
-            binding.pokeTextLinearLayout,
+            binding.pokemonInfoLayout,
             "alpha",
             0f,
             1f,
@@ -138,8 +145,8 @@ class DrawFragment() : DialogFragment() {
             override fun onAnimationEnd(animation: Animator) {
                 // 애니메이션(fade out)이 끝나면 호출
                 binding.drawGif.visibility = View.GONE
-                binding.pokemonImage.visibility = View.VISIBLE
-                binding.pokeTextLinearLayout.visibility = View.VISIBLE
+                binding.pokemonInfoLayout.visibility = View.VISIBLE
+                binding.confirmButton.visibility = View.VISIBLE
                 pokemonFadeIn.start()
                 pokeTextFadeIn.start()
             }
@@ -152,7 +159,7 @@ class DrawFragment() : DialogFragment() {
         })
     }
 
-    fun newInstance(pokemonId: Int): DrawFragment{
+    fun newInstance(pokemonId: Int): DrawFragment {
         val args = Bundle()
         args.putInt("pokemonId", pokemonId)
         val fragment = DrawFragment()
