@@ -9,6 +9,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navOptions
 import com.ssafy.walkforpokemon.R
 import com.ssafy.walkforpokemon.databinding.DialogDrawConfirmBinding
 import com.ssafy.walkforpokemon.viewmodels.DictionaryViewModel

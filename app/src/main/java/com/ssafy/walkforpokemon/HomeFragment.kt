@@ -47,10 +47,10 @@ class HomeFragment : Fragment() {
 
         val dictionaryTransitionOption = NavOptions.Builder()
             .setLaunchSingleTop(true)
-            .setEnterAnim(R.anim.slide_in_right)
-            .setExitAnim(R.anim.slide_out_left)
-            .setPopEnterAnim(R.anim.slide_in_left)
-            .setPopExitAnim(R.anim.slide_out_right)
+            .setEnterAnim(R.anim.slide_in_up)
+            .setExitAnim(R.anim.stay)
+            .setPopExitAnim(R.anim.slide_out_down)
+            .setExitAnim(R.anim.stay)
             .setPopUpTo(navController.graph.startDestinationId, false)
             .build()
 
