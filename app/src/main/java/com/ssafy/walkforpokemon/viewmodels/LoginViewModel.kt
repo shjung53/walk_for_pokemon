@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ssafy.walkforpokemon.LoginStatus
+import com.ssafy.walkforpokemon.domain.login.LoginWithGoogleUseCase
 import com.ssafy.walkforpokemon.domain.login.LoginWithNaverUseCase
 import com.ssafy.walkforpokemon.domain.login.RefreshLoginStatusUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val loginWithNaverUseCase: LoginWithNaverUseCase,
+    private val loginWithGoogleUseCase: LoginWithGoogleUseCase,
     private val refreshLoginStatusUseCase: RefreshLoginStatusUseCase,
 ) : ViewModel() {
 
@@ -21,10 +22,19 @@ class LoginViewModel @Inject constructor(
 
     val loginStatus get() = _loginStatus
 
-    fun onClickNaverLogin(context: Context) {
+//    fun onClickNaverLogin(context: Context) {
+//        viewModelScope.launch {
+//            loginWithNaverUseCase.invoke(context).fold(
+//                onSuccess = { refreshLoginStatus() },
+//                onFailure = {},
+//            )
+//        }
+//    }
+
+    fun onClickGoogleLogin(context: Context) {
         viewModelScope.launch {
-            loginWithNaverUseCase.invoke(context).fold(
-                onSuccess = { refreshLoginStatus() },
+            loginWithGoogleUseCase.invoke(context).fold(
+                onSuccess = {refreshLoginStatus()},
                 onFailure = {},
             )
         }

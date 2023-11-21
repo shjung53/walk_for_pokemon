@@ -18,6 +18,10 @@ class UserRepository @Inject constructor(private val userDataSource: UserDataSou
         )
     }
 
+    suspend fun loginWithGoogle(context: Context): Result<SuccessOrFailure> {
+        userDataSource.authenticateWith
+    }
+
     fun getLoginStatus(): Result<LoginStatus> {
         return try {
             when (userDataSource.getLoginStatus()) {

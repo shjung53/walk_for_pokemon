@@ -41,8 +41,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        dictionaryViewModel.initPokemonList()
-        mainViewModel.fetchUserId()
+//        mainViewModel.fetchUserId()
 
         mainViewModel.myPokemonSet.observe(this) {
             dictionaryViewModel.updateUserPokemonList(mainViewModel.user.value ?: User(""), it)
