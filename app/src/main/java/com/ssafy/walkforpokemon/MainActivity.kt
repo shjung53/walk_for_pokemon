@@ -4,9 +4,11 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ReportFragment.Companion.reportFragment
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.fitness.FitnessOptions
 import com.google.android.gms.fitness.data.DataType
@@ -30,7 +32,14 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         checkFitnessPermissions()
 
-        mainViewModel.setUserId(this, GoogleSignIn.getLastSignedInAccount(this)?.idToken.toString())
+        val userId = intent.getStringExtra("userId")
+
+        if (userId == null) {
+            CustomToast.createAndShow(this, "로그인에 문제가 발생했습니다")
+            finishAffinity()
+        } else {
+            mainViewModel.setUserId(this, userId)
+        }
         dictionaryViewModel.initPokemonList()
 
         mainViewModel.myPokemonSet.observe(this) {
@@ -74,6 +83,7 @@ class MainActivity : AppCompatActivity() {
                     // Result wasn't from Google Fit
                 }
             }
+
             else -> {
                 // Permission not granted
             }

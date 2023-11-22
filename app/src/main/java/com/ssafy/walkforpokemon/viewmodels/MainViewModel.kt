@@ -78,7 +78,7 @@ class MainViewModel @Inject constructor(
             withContext(Dispatchers.Main) {
                 fetchUserUseCase.invoke(id).fold(
                     onSuccess = { result ->
-                        if (result.id.isEmpty()) {
+                        if (result.id == "null" || result.id.isEmpty()) {
                             registerUser(id)
                         } else {
                             val newSet = mutableSetOf<Int>()

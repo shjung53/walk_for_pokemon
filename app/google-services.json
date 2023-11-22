@@ -1,40 +1,31 @@
 {
   "project_info": {
-    "project_number": "535049774080",
-    "project_id": "ssafy-final-pennant",
-    "storage_bucket": "ssafy-final-pennant.appspot.com"
+    "project_number": "57075546142",
+    "firebase_url": "https://walk-405401-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "walk-405401",
+    "storage_bucket": "walk-405401.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:535049774080:android:9179a40f1df5d335d1a4e5",
-        "android_client_info": {
-          "package_name": "com.ssafy.fptemp"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCiLS8Vjra4S6i9gzuC4Jo6x7QTpD_mEhI"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:535049774080:android:5d72b9d48871a421d1a4e5",
+        "mobilesdk_app_id": "1:57075546142:android:9779071c8d99cde127560f",
         "android_client_info": {
           "package_name": "com.ssafy.walkforpokemon"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "57075546142-9e80ili37f54bstuirjfno3t0skl3iv8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ssafy.walkforpokemon",
+            "certificate_hash": "8f3caea39a237c0e59fb6f40b2f2443ede8d17be"
+          }
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyCiLS8Vjra4S6i9gzuC4Jo6x7QTpD_mEhI"
+          "current_key": "AIzaSyBfuqbFN5BQXL1vTEEW7WU5ce-SWHBOYFQ"
         }
       ],
       "services": {

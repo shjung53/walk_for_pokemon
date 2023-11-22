@@ -19,7 +19,9 @@ class PokemonDataSource @Inject constructor() {
             Firebase.firestore.collection("pokemon")
                 .get()
                 .addOnSuccessListener { result ->
+                    Log.d(TAG, "fetchPokemons() called with: result = ${result.documents.size}")
                     for (document in result) {
+                        Log.d(TAG, "fetchPokemons() called with: result = ${document.data["id"]}, ${document.data["name"]}")
                         pokemonResponseList.add(
                             PokemonResponse(
                                 id = document.data["id"].toString().toInt(),

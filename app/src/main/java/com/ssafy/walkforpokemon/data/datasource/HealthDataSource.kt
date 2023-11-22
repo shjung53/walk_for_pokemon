@@ -44,13 +44,12 @@ class HealthDataSource @Inject constructor() {
             Fitness.getHistoryClient(context, account)
                 .readData(readRequest)
                 .addOnSuccessListener { response ->
-                    val stepCount =
-                        (
-                            response.buckets[0].dataSets[0].dataPoints[0].getValue(
-                                Field.FIELD_STEPS,
-                            )
-                                .toString().toInt()
-                            )
+                    var stepCount = 0
+                    if (response.buckets[0].dataSets[0].dataPoints.size > 0) {
+                        stepCount = response.buckets[0].dataSets[0].dataPoints[0].getValue(
+                            Field.FIELD_STEPS,
+                        ).toString().toInt()
+                    }
                     continuation.resume(Result.success(stepCount), null)
                     // Use response data here
                 }

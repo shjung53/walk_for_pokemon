@@ -24,9 +24,15 @@ class LoginActivity : AppCompatActivity() {
     private val googleSignInClient: GoogleSignInClient by lazy { getGoogleClient() }
 
     private val googleAuthLauncher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+            val account = task.getResult(ApiException::class.java)
+
+            val tokenId = account.id
             try { // 로그인 잘 된 경우!!
-                val intent = Intent(this, MainActivity::class.java)
+                val intent = Intent(this, MainActivity::class.java).apply {
+                    putExtra("userId", tokenId)
+                }
                 startActivity(
                     intent,
                     ActivityOptions.makeSceneTransitionAnimation(this).toBundle(),
