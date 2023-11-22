@@ -39,11 +39,8 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         mainViewModel.mainPokemon.observe(requireActivity()) { mainPokemonId ->
-            Log.d(TAG, "onViewCreated() called with: mainPokemonId = $mainPokemonId")
             dictionaryViewModel.pokemonList.value?.let { it ->
-                Log.d(TAG, "onViewCreated() called")
                 val mainPokemonImage = it.find { pokemon -> mainPokemonId == pokemon.id }?.image3D
-                Log.d(TAG, "$mainPokemonImage")
                 Glide.with(requireActivity()).load(
                     mainPokemonImage,
                 ).into(binding.mainPokemonImage)
@@ -53,8 +50,9 @@ class HomeFragment : Fragment() {
         /* TODO
             1. user data에서 마일리지, 걸음 수 받아와서 xml에 집어넣기
          */
-        binding.nowMileage.text = String.format("%,d", 10) // 여기 집어넣기
-        binding.nowSteps.text = String.format("%,d", 10000000)
+
+        binding.currentMileage.text = String.format("%,d", mainViewModel.mileage.value) // 여기 집어넣기
+        binding.nowSteps.text = String.format("%,d", mainViewModel.stepCount.value)
 
         setNavigation()
     }

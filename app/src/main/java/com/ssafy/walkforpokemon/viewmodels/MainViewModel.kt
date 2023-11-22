@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.fitness.HistoryClient
 import com.ssafy.walkforpokemon.data.dataclass.User
+import com.ssafy.walkforpokemon.domain.health.AddMileageUseCase
 import com.ssafy.walkforpokemon.domain.health.FetchStepCountUseCase
 import com.ssafy.walkforpokemon.domain.health.InitHealthClientUseCase
 import com.ssafy.walkforpokemon.domain.pokemon.UpdateMainPokemonUseCase
@@ -26,6 +27,7 @@ class MainViewModel @Inject constructor(
     private val fetchStepCountUseCase: FetchStepCountUseCase,
     private val drawPokemonUseCase: DrawPokemonUseCase,
     private val updateMainPokemonUseCase: UpdateMainPokemonUseCase,
+    private val addMileageUseCase: AddMileageUseCase
 ) :
     ViewModel() {
     private var _userId = ""
@@ -42,8 +44,13 @@ class MainViewModel @Inject constructor(
     val myPokemonSet get() = _myPokemonSet
 
     private var _mainPokemon: MutableLiveData<Int> = MutableLiveData(0)
-
     val mainPokemon get() = _mainPokemon
+
+    private var _mileage: MutableLiveData<Int> = MutableLiveData(0)
+    val mileage get() = _mileage
+
+    private var _stepCount: MutableLiveData<Int> = MutableLiveData(0)
+    val stepCount get() = _stepCount
 
     fun setUserId(idToken: String) {
         _userId = idToken
@@ -68,6 +75,10 @@ class MainViewModel @Inject constructor(
                     if (result.mainPokemon != mainPokemon.value) {
                         _mainPokemon.value = result.mainPokemon
                     }
+
+                    if (result.currentMileage != mileage.value) {
+                        _mileage.value = result.currentMileage
+                    }
                 }
             },
             onFailure = { throwable ->
@@ -79,9 +90,7 @@ class MainViewModel @Inject constructor(
     private fun registerUser(id: String) {
         viewModelScope.launch {
             registerUserUseCase.invoke(id).fold(
-                onSuccess = {
-                    Log.d("여기", "등록성공")
-                },
+                onSuccess = {},
                 onFailure = {},
             )
         }
@@ -126,9 +135,30 @@ class MainViewModel @Inject constructor(
     fun refreshStepCount() {
         viewModelScope.launch {
             fetchStepCountUseCase.invoke().fold(
-                onSuccess = {},
-                onFailure = {
-                },
+                onSuccess = { _stepCount.value = it },
+                onFailure = {},
+            )
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun calculateStepCountToAdd(newStepCount: Int){
+        val addedMileage = user.value?.addedMileage ?: 0
+        if(addedMileage < newStepCount) {
+            val mileageToAdd = newStepCount - addedMileage
+            addMileageToUser(mileageToAdd)
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun addMileageToUser(mileageToAdd: Int){
+        val currentMileage = user.value?.currentMileage ?: 0
+        val userId = user.value?.id ?: ""
+        val newCurrentMileage = currentMileage + mileageToAdd
+        viewModelScope.launch {
+            addMileageUseCase.invoke(userId, newCurrentMileage).fold(
+                onSuccess = {_mileage.value = newCurrentMileage},
+                onFailure = {}
             )
         }
     }

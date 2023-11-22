@@ -142,4 +142,36 @@ class UserDataSource @Inject constructor() {
         }
         return result
     }
+
+    suspend fun addMileage(userId: String, newCurrentMileage: Int): Result<SuccessOrFailure> {
+
+        var documentId = ""
+        Firebase.firestore.collection("user").whereEqualTo("id", userId).get()
+            .addOnSuccessListener { result ->
+                for (document in result) {
+                    documentId = document.id
+                }
+            }.await()
+
+        val result = suspendCancellableCoroutine<Result<SuccessOrFailure>> { continuation ->
+            Firebase.firestore.collection("user").document(documentId).update(
+                "currentMileage",
+                newCurrentMileage,
+            ).addOnSuccessListener { documentReference ->
+                continuation.resume(Result.success(SuccessOrFailure.Success), null)
+                Log.d(TAG, "addMileage() called with: documentReference = $documentReference")
+            }.addOnFailureListener { e ->
+                continuation.resume(
+                    Result.failure(
+                        Exception(
+                            errorDescription ?: "unknown error",
+                        ),
+                    ),
+                    null,
+                )
+                Log.d(TAG, "addMileage() called with: e = $e")
+            }
+        }
+        return result
+    }
 }

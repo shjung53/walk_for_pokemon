@@ -7,9 +7,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.AppCompatDrawableManager.preload
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.ssafy.walkforpokemon.data.dataclass.Pokemon
 import com.ssafy.walkforpokemon.databinding.ItemDictionaryBinding
 
@@ -33,7 +35,8 @@ class DictionaryAdapter(private val context: Context, private var itemList: List
         fun bind(data: Pokemon) {
             binding.number.text = "no.${data.id}"
             binding.name.text = data.nameKorean
-            Glide.with(context).load(data.imageOfficial).into(binding.image)
+            Glide.with(context).load(data.imageOfficial).diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(binding.image)
             val typeColor = context.resources.getIdentifier(
                 "type_${data.type[0]}",
                 "color",
@@ -70,10 +73,6 @@ class DictionaryAdapter(private val context: Context, private var itemList: List
     override fun getItemCount(): Int = itemList.size
 
     override fun onBindViewHolder(holder: DictionaryAdapter.DictionaryViewHolder, position: Int) {
-        Log.d(
-            TAG,
-            "bind() called with: data = ${itemList[position].id}, ${itemList[position].isMain}",
-        )
         holder.bind(itemList[position])
     }
 

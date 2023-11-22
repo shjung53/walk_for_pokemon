@@ -30,4 +30,11 @@ class UserRepository @Inject constructor(private val userDataSource: UserDataSou
             onFailure = { return Result.failure(it) },
         )
     }
+
+    suspend fun addMileage(userId: String, newCurrentMileage: Int): Result<SuccessOrFailure> {
+        userDataSource.addMileage(userId, newCurrentMileage).fold(
+            onSuccess = { return Result.success(it) },
+            onFailure = { return Result.failure(it) },
+        )
+    }
 }
