@@ -11,16 +11,10 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.fitness.Fitness
-import com.google.android.gms.fitness.FitnessOptions
-import com.google.android.gms.fitness.data.DataType
 import com.ssafy.walkforpokemon.databinding.FragmentHomeBinding
 import com.ssafy.walkforpokemon.viewmodels.DictionaryViewModel
 import com.ssafy.walkforpokemon.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
-
-private const val TAG = "HomeFragment"
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
@@ -67,12 +61,12 @@ class HomeFragment : Fragment() {
 
         mainViewModel.stepCount.observe(requireActivity()) {
             mainViewModel.calculateStepCountToAdd(it)
+            binding.nowSteps.text = String.format("%,d", mainViewModel.stepCount.value)
         }
 
         mainViewModel.currentMileage.observe(requireActivity()) {
             binding.currentMileage.text =
                 String.format("%,d", mainViewModel.currentMileage.value) // 여기 집어넣기
-            binding.nowSteps.text = String.format("%,d", mainViewModel.stepCount.value)
         }
 
         setNavigation()

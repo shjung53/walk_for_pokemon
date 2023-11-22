@@ -2,10 +2,10 @@ package com.ssafy.walkforpokemon.viewmodels
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ssafy.walkforpokemon.data.dataclass.Pokemon
-import com.ssafy.walkforpokemon.data.dataclass.User
 import com.ssafy.walkforpokemon.domain.pokemon.InitPokemonListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -13,6 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DictionaryViewModel @Inject constructor(
+    private val state: SavedStateHandle,
     private val initPokemonListUseCase: InitPokemonListUseCase,
 ) :
     ViewModel() {
@@ -23,11 +24,17 @@ class DictionaryViewModel @Inject constructor(
     private var _myPokemonList = MutableLiveData<List<Pokemon>>(emptyList())
     val myPokemonList: LiveData<List<Pokemon>> get() = _myPokemonList
 
+    init {
+        _pokemonList.value = state["pokemonList"] ?: emptyList()
+        _myPokemonList.value = state["myPokemonList"] ?: emptyList()
+    }
+
     fun initPokemonList() {
         viewModelScope.launch {
             initPokemonListUseCase.invoke().fold(
                 onSuccess = {
                     _pokemonList.value = it
+                    state["pokemonList"] = _pokemonList.value
                 },
                 onFailure = {},
             )
@@ -43,6 +50,7 @@ class DictionaryViewModel @Inject constructor(
                 )
             }
             _myPokemonList.value = newPokemonList
+            state["myPokemonList"] = _myPokemonList.value
         }
     }
 }

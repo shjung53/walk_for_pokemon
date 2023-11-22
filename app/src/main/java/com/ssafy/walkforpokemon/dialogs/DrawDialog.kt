@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
@@ -54,16 +55,21 @@ class DrawDialog : DialogFragment() {
             findNavController().navigate(R.id.home, null)
         }
         binding.confirmButton.setOnClickListener {
+            if ((mainViewModel.currentMileage.value ?: 0) < 1000) {
+                Toast.makeText(requireActivity(), "마일리지가 부족합니다", Toast.LENGTH_SHORT).show()
+                this@DrawDialog.dismiss()
+                return@setOnClickListener
+            }
             val newPokemonId = getNewPokemonId()
             val nowSet = mainViewModel.myPokemonSet.value ?: mutableSetOf()
             if (nowSet.contains(newPokemonId)) duplication = true
-            mainViewModel.drawNewPokemon(newPokemonId)
+            mainViewModel.drawPokemon(newPokemonId)
 
             mainViewModel.myPokemonSet.observe(this) {
                 lifecycleScope.launch {
                     withContext(Dispatchers.Main) {
                         dictionaryViewModel.updateUserPokemonList(
-                            mainViewModel.mainPokemon.value?: 0,
+                            mainViewModel.mainPokemon.value ?: 0,
                             mainViewModel.myPokemonSet.value ?: mutableSetOf(),
                         )
                     }

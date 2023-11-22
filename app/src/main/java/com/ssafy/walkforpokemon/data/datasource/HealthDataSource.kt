@@ -7,11 +7,9 @@ import androidx.annotation.RequiresApi
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.fitness.Fitness
 import com.google.android.gms.fitness.FitnessOptions
-import com.google.android.gms.fitness.HistoryClient
 import com.google.android.gms.fitness.data.DataType
 import com.google.android.gms.fitness.data.Field
 import com.google.android.gms.fitness.request.DataReadRequest
-import com.ssafy.walkforpokemon.SuccessOrFailure
 import kotlinx.coroutines.suspendCancellableCoroutine
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -24,7 +22,6 @@ private const val TAG = "HealthDataSource"
 class HealthDataSource @Inject constructor() {
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun fetchStepCount(context: Context): Result<Int> {
-
         val fitnessOptions = FitnessOptions.builder()
             .addDataType(DataType.TYPE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
             .addDataType(DataType.AGGREGATE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)

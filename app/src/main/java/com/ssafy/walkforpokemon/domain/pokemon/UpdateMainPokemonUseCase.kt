@@ -1,7 +1,6 @@
 package com.ssafy.walkforpokemon.domain.pokemon
 
 import com.ssafy.walkforpokemon.SuccessOrFailure
-import com.ssafy.walkforpokemon.data.dataclass.User
 import com.ssafy.walkforpokemon.data.repository.UserRepository
 import javax.inject.Inject
 

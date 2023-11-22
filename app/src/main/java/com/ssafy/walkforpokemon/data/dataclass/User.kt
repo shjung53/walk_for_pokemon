@@ -1,5 +1,9 @@
 package com.ssafy.walkforpokemon.data.dataclass
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class User(
     val id: String,
     val totalMileage: Int = 0,
@@ -8,4 +12,4 @@ data class User(
     val addedMileage: Int = 0,
     val myPokemons: List<Int> = listOf(),
     val mainPokemon: Int = 0,
-)
+) : Parcelable

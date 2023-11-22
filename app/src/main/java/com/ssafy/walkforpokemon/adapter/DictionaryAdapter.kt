@@ -3,19 +3,15 @@ package com.ssafy.walkforpokemon.adapter
 import android.content.Context
 import android.graphics.Color
 import android.graphics.PorterDuff
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatDrawableManager.preload
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.ssafy.walkforpokemon.data.dataclass.Pokemon
 import com.ssafy.walkforpokemon.databinding.ItemDictionaryBinding
-
-private const val TAG = "싸피"
 
 class DictionaryAdapter(private val context: Context, private var itemList: List<Pokemon>) :
     RecyclerView.Adapter<DictionaryAdapter.DictionaryViewHolder>() {

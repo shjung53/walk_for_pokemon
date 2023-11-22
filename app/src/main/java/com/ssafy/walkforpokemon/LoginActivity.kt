@@ -23,18 +23,15 @@ class LoginActivity : AppCompatActivity() {
     // Google Sign In API와 호출할 구글 로그인 클라이언트
     private val googleSignInClient: GoogleSignInClient by lazy { getGoogleClient() }
 
-
     private val googleAuthLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             try { // 로그인 잘 된 경우!!
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(
                     intent,
-                    ActivityOptions.makeSceneTransitionAnimation(this).toBundle()
+                    ActivityOptions.makeSceneTransitionAnimation(this).toBundle(),
                 )
                 finish()
-
-
             } catch (e: ApiException) {
                 Log.d(TAG, e.stackTraceToString())
             }
@@ -44,7 +41,6 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
 
         binding.googleLoginBtn.setOnClickListener {
             requestGoogleLogin()
@@ -58,11 +54,10 @@ class LoginActivity : AppCompatActivity() {
             }
             startActivity(
                 intent,
-                ActivityOptions.makeSceneTransitionAnimation(this).toBundle()
+                ActivityOptions.makeSceneTransitionAnimation(this).toBundle(),
             )
             finish()
         }
-
     }
 
     private fun requestGoogleLogin() { // 로그인 하는 함수
@@ -79,5 +74,4 @@ class LoginActivity : AppCompatActivity() {
 
         return GoogleSignIn.getClient(this, googleSignInOption)
     }
-
 }

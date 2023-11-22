@@ -31,8 +31,11 @@ class UserRepository @Inject constructor(private val userDataSource: UserDataSou
         )
     }
 
-    suspend fun addMileage(userId: String, newCurrentMileage: Int): Result<SuccessOrFailure> {
-        userDataSource.addMileage(userId, newCurrentMileage).fold(
+    suspend fun updateMileageUseCase(
+        userId: String,
+        newCurrentMileage: Int,
+    ): Result<SuccessOrFailure> {
+        userDataSource.updateMileageUseCase(userId, newCurrentMileage).fold(
             onSuccess = { return Result.success(it) },
             onFailure = { return Result.failure(it) },
         )

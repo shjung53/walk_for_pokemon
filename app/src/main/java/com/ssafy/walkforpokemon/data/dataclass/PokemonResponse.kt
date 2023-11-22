@@ -1,5 +1,9 @@
 package com.ssafy.walkforpokemon.data.dataclass
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class PokemonResponse(
     val id: Int = 0,
     val name: String = "",
@@ -10,4 +14,4 @@ data class PokemonResponse(
     val isMythical: Boolean = false,
     val percentage: Double = 0.0,
     val type: List<String> = listOf(),
-)
+) : Parcelable

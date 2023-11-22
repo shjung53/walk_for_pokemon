@@ -34,11 +34,11 @@ class MainActivity : AppCompatActivity() {
         dictionaryViewModel.initPokemonList()
 
         mainViewModel.myPokemonSet.observe(this) {
-            dictionaryViewModel.updateUserPokemonList(mainViewModel.mainPokemon.value?: 0, it)
+            dictionaryViewModel.updateUserPokemonList(mainViewModel.mainPokemon.value ?: 0, it)
         }
         mainViewModel.mainPokemon.observe(this) {
             dictionaryViewModel.updateUserPokemonList(
-                mainViewModel.mainPokemon.value?: 0,
+                mainViewModel.mainPokemon.value ?: 0,
                 mainViewModel.myPokemonSet.value ?: mutableSetOf(),
             )
         }
@@ -61,7 +61,6 @@ class MainActivity : AppCompatActivity() {
                 fitnessOptions,
             )
         } else {
-
         }
     }
 

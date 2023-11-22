@@ -3,8 +3,6 @@ package com.ssafy.walkforpokemon.data.repository
 import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
-import com.google.android.gms.fitness.HistoryClient
-import com.ssafy.walkforpokemon.SuccessOrFailure
 import com.ssafy.walkforpokemon.data.datasource.HealthDataSource
 import javax.inject.Inject
 

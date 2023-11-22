@@ -5,33 +5,39 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ssafy.walkforpokemon.domain.health.AddMileageUseCase
 import com.ssafy.walkforpokemon.domain.health.FetchStepCountUseCase
+import com.ssafy.walkforpokemon.domain.health.UpdateMileageUseCase
 import com.ssafy.walkforpokemon.domain.pokemon.UpdateMainPokemonUseCase
 import com.ssafy.walkforpokemon.domain.user.DrawPokemonUseCase
 import com.ssafy.walkforpokemon.domain.user.FetchUserUseCase
 import com.ssafy.walkforpokemon.domain.user.RegisterUserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 private const val TAG = "MainViewModel"
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
+    private val state: SavedStateHandle,
     private val fetchUserUseCase: FetchUserUseCase,
     private val registerUserUseCase: RegisterUserUseCase,
     private val fetchStepCountUseCase: FetchStepCountUseCase,
     private val drawPokemonUseCase: DrawPokemonUseCase,
     private val updateMainPokemonUseCase: UpdateMainPokemonUseCase,
-    private val addMileageUseCase: AddMileageUseCase
-) :
-    ViewModel() {
+    private val updateMileageUseCase: UpdateMileageUseCase,
+) : ViewModel() {
     private var _userId = ""
         set(value) {
-            if (value != "") field = value
+            if (value != "") {
+                field = value
+                state["userId"] = value
+            }
         }
     val userId get() = _userId
 
@@ -51,39 +57,49 @@ class MainViewModel @Inject constructor(
     private var _stepCount: MutableLiveData<Int> = MutableLiveData(0)
     val stepCount get() = _stepCount
 
+    init {
+        _userId = state.get<String>("userId") ?: ""
+        _myPokemonSet.value = state["myPokemonSet"] ?: mutableSetOf()
+        _mainPokemon.value = state["mainPokemon"] ?: 0
+        _addedMileage.value = state["addedMileage"] ?: 0
+        _currentMileage.value = state["currentMileage"] ?: 0
+        _stepCount.value = state["stepCount"] ?: 0
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     fun setUserId(context: Context, idToken: String) {
         _userId = idToken
         initUser(context, userId)
-
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun initUser(context: Context, id: String) {
         viewModelScope.launch {
-            fetchUserUseCase.invoke(id).fold(
-                onSuccess = { result ->
-                    if (result.id.isEmpty()) {
-                        registerUser(id)
-                    } else {
-                        val newSet = mutableSetOf<Int>()
-                        newSet.addAll(result.myPokemons)
-                        _myPokemonSet.value = newSet
+            withContext(Dispatchers.Main) {
+                fetchUserUseCase.invoke(id).fold(
+                    onSuccess = { result ->
+                        if (result.id.isEmpty()) {
+                            registerUser(id)
+                        } else {
+                            val newSet = mutableSetOf<Int>()
+                            newSet.addAll(result.myPokemons)
+                            _myPokemonSet.value = newSet
+                            _mainPokemon.value = result.mainPokemon
+                            _currentMileage.value = result.currentMileage
+                            _addedMileage.value = result.addedMileage
+                            state["myPokemonSet"] = _myPokemonSet.value
+                            state["mainPokemon"] = _mainPokemon.value
+                            state["currentMileage"] = _currentMileage.value
+                            state["addedMileage"] = _addedMileage.value
+                        }
+                    },
+                    onFailure = { throwable ->
+                        Log.d(TAG, "initUser() called with: throwable = $throwable")
+                    },
+                )
 
-                        _mainPokemon.value = result.mainPokemon
-
-                        _currentMileage.value = result.currentMileage
-
-                        _addedMileage.value = result.addedMileage
-                    }
-                },
-                onFailure = { throwable ->
-                    Log.d(TAG, "initUser() called with: throwable = $throwable")
-                },
-            )
-        }
-        viewModelScope.launch {
-            refreshStepCount(context)
+                refreshStepCount(context)
+            }
         }
     }
 
@@ -97,7 +113,22 @@ class MainViewModel @Inject constructor(
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun drawNewPokemon(newPokemonId: Int) {
+    fun drawPokemon(newPokemonId: Int) {
+        val newCurrentMileage = (currentMileage.value ?: 0) - 1000
+        viewModelScope.launch {
+            updateMileageUseCase.invoke(userId, newCurrentMileage).fold(
+                onSuccess = {
+                    _currentMileage.value = newCurrentMileage
+                    state["currentMileage"] = _currentMileage.value
+                    addNewPokemon(newPokemonId)
+                },
+                onFailure = {},
+            )
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun addNewPokemon(newPokemonId: Int) {
         viewModelScope.launch {
             drawPokemonUseCase.invoke(userId, newPokemonId).fold(
                 onSuccess = {
@@ -107,6 +138,7 @@ class MainViewModel @Inject constructor(
                     }
                     newPokemonSet.add(newPokemonId)
                     _myPokemonSet.value = newPokemonSet
+                    state["myPokemonSet"] = _myPokemonSet.value
                 },
                 onFailure = {},
             )
@@ -118,6 +150,7 @@ class MainViewModel @Inject constructor(
             updateMainPokemonUseCase.invoke(userId, pokemonId).fold(
                 onSuccess = {
                     _mainPokemon.value = pokemonId
+                    state["mainPokemon"] = _mainPokemon.value
                 },
                 onFailure = {},
             )
@@ -128,7 +161,10 @@ class MainViewModel @Inject constructor(
     fun refreshStepCount(context: Context) {
         viewModelScope.launch {
             fetchStepCountUseCase.invoke(context).fold(
-                onSuccess = { _stepCount.value = it },
+                onSuccess = {
+                    _stepCount.value = it
+                    state["stepCount"] = _stepCount.value
+                },
                 onFailure = {},
             )
         }
@@ -137,10 +173,6 @@ class MainViewModel @Inject constructor(
     @RequiresApi(Build.VERSION_CODES.O)
     fun calculateStepCountToAdd(newStepCount: Int) {
         if ((addedMileage.value ?: 0) < newStepCount) {
-            Log.d(
-                TAG,
-                "calculateStepCountToAdd() called with: newStepCount = $newStepCount, ${addedMileage.value ?: 0}"
-            )
             val mileageToAdd = newStepCount - (addedMileage.value ?: 0)
             addMileageToUser(mileageToAdd)
         }
@@ -150,12 +182,14 @@ class MainViewModel @Inject constructor(
     fun addMileageToUser(mileageToAdd: Int) {
         val newCurrentMileage = (currentMileage.value ?: 0) + mileageToAdd
         viewModelScope.launch {
-            addMileageUseCase.invoke(userId, newCurrentMileage).fold(
+            updateMileageUseCase.invoke(userId, newCurrentMileage).fold(
                 onSuccess = {
                     _currentMileage.value = newCurrentMileage
                     _addedMileage.value = _addedMileage.value?.plus(mileageToAdd)
+                    state["currentMileage"] = _currentMileage.value
+                    state["addedMileage"] = _addedMileage.value
                 },
-                onFailure = {}
+                onFailure = {},
             )
         }
     }

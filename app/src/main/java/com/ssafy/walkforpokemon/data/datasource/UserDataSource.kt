@@ -108,7 +108,8 @@ class UserDataSource @Inject constructor() {
     }
 
     suspend fun updateMainPokemon(
-        userId: String, pokemonId: Int
+        userId: String,
+        pokemonId: Int,
     ): Result<SuccessOrFailure> {
         var documentId = ""
         Firebase.firestore.collection("user").whereEqualTo("id", userId).get()
@@ -143,8 +144,10 @@ class UserDataSource @Inject constructor() {
         return result
     }
 
-    suspend fun addMileage(userId: String, newCurrentMileage: Int): Result<SuccessOrFailure> {
-
+    suspend fun updateMileageUseCase(
+        userId: String,
+        newCurrentMileage: Int,
+    ): Result<SuccessOrFailure> {
         var documentId = ""
         Firebase.firestore.collection("user").whereEqualTo("id", userId).get()
             .addOnSuccessListener { result ->
