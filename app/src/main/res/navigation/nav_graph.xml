@@ -13,6 +13,9 @@
         <argument
             android:name="pokemonId"
             android:defaultValue="0" />
+        <argument
+            android:name="duplication"
+            android:defaultValue="false" />
         <action
             android:id="@+id/action_drawFragment_to_home3"
             app:destination="@id/home" />

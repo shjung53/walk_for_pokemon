@@ -24,6 +24,7 @@ class DrawDialog : DialogFragment() {
     private val binding get() = _binding!!
     private val mainViewModel: MainViewModel by activityViewModels()
     private val dictionaryViewModel: DictionaryViewModel by activityViewModels()
+    private var duplication = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +53,8 @@ class DrawDialog : DialogFragment() {
         }
         binding.confirmButton.setOnClickListener {
             val newPokemonId = getNewPokemonId()
+            val nowSet = mainViewModel.myPokemonSet.value ?: mutableSetOf()
+            if (nowSet.contains(newPokemonId)) duplication = true
             mainViewModel.drawPokemon(newPokemonId)
 
             mainViewModel.myPokemonSet.observe(this) {
@@ -62,9 +65,11 @@ class DrawDialog : DialogFragment() {
                             mainViewModel.myPokemonSet.value ?: mutableSetOf(),
                         )
                     }
+
                     if (it.contains(newPokemonId)) {
                         val action = DrawDialogDirections.actionDrawDialogToDrawFragment(
                             newPokemonId,
+                            duplication,
                         )
                         findNavController().navigate(action)
                         this@DrawDialog.dismiss()

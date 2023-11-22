@@ -40,11 +40,18 @@ class MainActivity : AppCompatActivity() {
                 createHealthClient()
             }
         }
+
         dictionaryViewModel.initPokemonList()
         mainViewModel.fetchUserId()
 
         mainViewModel.myPokemonSet.observe(this) {
             dictionaryViewModel.updateUserPokemonList(mainViewModel.user.value ?: User(""), it)
+        }
+        mainViewModel.mainPokemon.observe(this) {
+            dictionaryViewModel.updateUserPokemonList(
+                mainViewModel.user.value ?: User(""),
+                mainViewModel.myPokemonSet.value ?: mutableSetOf(),
+            )
         }
     }
 

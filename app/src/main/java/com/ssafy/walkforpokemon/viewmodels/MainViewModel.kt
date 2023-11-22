@@ -97,12 +97,9 @@ class MainViewModel @Inject constructor(
     }
 
     fun drawPokemon(pokemonId: Int) {
-        val myNewPokemonList = mutableListOf<Int>()
-        user.value?.let { myNewPokemonList.addAll(it.myPokemons) }
-        myNewPokemonList.add(pokemonId)
         viewModelScope.launch {
             userId.value?.let { userId ->
-                drawPokemonUseCase.invoke(userId, myNewPokemonList).fold(
+                drawPokemonUseCase.invoke(userId, pokemonId).fold(
                     onSuccess = {
                         fetchUser(userId)
                     },

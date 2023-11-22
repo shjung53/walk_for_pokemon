@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -33,12 +34,21 @@ class DrawFragment() : Fragment() {
 
     private val dictionaryViewModel: DictionaryViewModel by activityViewModels()
 
+    private var pokemonId = 0
+
+    private var duplication = false
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentDrawBinding.inflate(inflater, container, false)
+
+        val args: DrawFragmentArgs by navArgs()
+        pokemonId = args.pokemonId
+        duplication = args.duplication
+
         return binding.root
     }
 
@@ -46,10 +56,6 @@ class DrawFragment() : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setDrawAnimation()
-
-        val args: DrawFragmentArgs by navArgs()
-
-        val pokemonId = args.pokemonId
 
         val pokemon = dictionaryViewModel.pokemonList.value?.find { it.id == pokemonId }
 
@@ -149,6 +155,13 @@ class DrawFragment() : Fragment() {
                 binding.confirmButton.visibility = View.VISIBLE
                 pokemonFadeIn.start()
                 pokeTextFadeIn.start()
+                if (duplication) {
+                    Toast.makeText(
+                        requireActivity(),
+                        "이미 존재하는 포켓몬은 200마일리지로 전환됩니다!",
+                        Toast.LENGTH_SHORT,
+                    ).show()
+                }
             }
 
             override fun onAnimationCancel(animation: Animator) {

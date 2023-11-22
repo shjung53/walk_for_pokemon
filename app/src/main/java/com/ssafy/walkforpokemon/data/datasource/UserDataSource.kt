@@ -2,6 +2,7 @@ package com.ssafy.walkforpokemon.data.datasource
 
 import android.content.Context
 import android.util.Log
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.navercorp.nid.NaverIdLoginSDK
@@ -117,9 +118,9 @@ class UserDataSource @Inject constructor() {
         return result
     }
 
-    suspend fun updateUserPokemonList(
+    suspend fun addPokemonToUser(
         userId: String,
-        pokemonList: List<Int>,
+        pokemonId: Int,
     ): Result<SuccessOrFailure> {
         var documentId = ""
         Firebase.firestore.collection("user").whereEqualTo("id", userId).get()
@@ -132,7 +133,7 @@ class UserDataSource @Inject constructor() {
         val result = suspendCancellableCoroutine { continuation ->
             Firebase.firestore.collection("user").document(documentId).update(
                 "myPokemons",
-                pokemonList,
+                FieldValue.arrayUnion(pokemonId),
             ).addOnSuccessListener { documentReference ->
                 continuation.resume(Result.success(SuccessOrFailure.Success), null)
                 Log.d(

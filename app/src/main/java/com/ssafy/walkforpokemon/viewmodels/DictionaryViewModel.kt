@@ -28,7 +28,6 @@ class DictionaryViewModel @Inject constructor(
             initPokemonListUseCase.invoke().fold(
                 onSuccess = {
                     _pokemonList.value = it
-                    _myPokemonList.value = it
                 },
                 onFailure = {},
             )
