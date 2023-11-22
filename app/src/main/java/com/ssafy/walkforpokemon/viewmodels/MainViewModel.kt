@@ -12,18 +12,14 @@ import com.ssafy.walkforpokemon.domain.health.FetchStepCountUseCase
 import com.ssafy.walkforpokemon.domain.health.InitHealthClientUseCase
 import com.ssafy.walkforpokemon.domain.pokemon.UpdateMainPokemonUseCase
 import com.ssafy.walkforpokemon.domain.user.DrawPokemonUseCase
-import com.ssafy.walkforpokemon.domain.user.FetchUserIdUseCase
 import com.ssafy.walkforpokemon.domain.user.FetchUserUseCase
 import com.ssafy.walkforpokemon.domain.user.RegisterUserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val fetchUserIdUseCase: FetchUserIdUseCase,
     private val fetchUserUseCase: FetchUserUseCase,
     private val registerUserUseCase: RegisterUserUseCase,
     private val initHealthClientUseCase: InitHealthClientUseCase,
@@ -32,8 +28,10 @@ class MainViewModel @Inject constructor(
     private val updateMainPokemonUseCase: UpdateMainPokemonUseCase,
 ) :
     ViewModel() {
-
-    private var _userId: MutableLiveData<String> = MutableLiveData()
+    private var _userId = ""
+        set(value) {
+            if (value != "") field = value
+        }
     private val userId get() = _userId
 
     private var _user: MutableLiveData<User> = MutableLiveData(User(""))
@@ -47,18 +45,10 @@ class MainViewModel @Inject constructor(
 
     val mainPokemon get() = _mainPokemon
 
-    fun fetchUserId() {
+    fun setUserId(idToken: String) {
+        _userId = idToken
         viewModelScope.launch {
-            withContext(Dispatchers.Main) {
-                fetchUserIdUseCase.invoke().fold(
-                    onSuccess = {
-                        _userId.value = it
-                        fetchUser(it)
-                    },
-                    onFailure = {},
-                )
-            }
-            _user.value = User(id = userId.value ?: "")
+            fetchUser(userId)
         }
     }
 
@@ -89,23 +79,22 @@ class MainViewModel @Inject constructor(
     private fun registerUser(id: String) {
         viewModelScope.launch {
             registerUserUseCase.invoke(id).fold(
-                onSuccess = {},
-                onFailure = {
+                onSuccess = {
+                    Log.d("여기", "등록성공")
                 },
+                onFailure = {},
             )
         }
     }
 
     fun drawPokemon(pokemonId: Int) {
         viewModelScope.launch {
-            userId.value?.let { userId ->
-                drawPokemonUseCase.invoke(userId, pokemonId).fold(
-                    onSuccess = {
-                        fetchUser(userId)
-                    },
-                    onFailure = {},
-                )
-            }
+            drawPokemonUseCase.invoke(userId, pokemonId).fold(
+                onSuccess = {
+                    fetchUser(userId)
+                },
+                onFailure = {},
+            )
         }
     }
 

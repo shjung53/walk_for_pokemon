@@ -3,24 +3,22 @@ package com.ssafy.walkforpokemon
 import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.viewModels
+import android.util.Log
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.common.api.Scope
-import com.google.android.gms.tasks.Task
 import com.ssafy.walkforpokemon.databinding.ActivityLoginBinding
-import com.ssafy.walkforpokemon.viewmodels.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
+
+private const val TAG = "LoginActivity"
 
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
-    private val loginViewModel: LoginViewModel by viewModels()
 
     // Google Sign In API와 호출할 구글 로그인 클라이언트
     private val googleSignInClient: GoogleSignInClient by lazy { getGoogleClient() }
@@ -33,21 +31,16 @@ class LoginActivity : AppCompatActivity() {
             try { // 로그인 잘 된 경우!!
                 val account = task.getResult(ApiException::class.java)
 
-                // 이름, 이메일 등이 필요하다면
-                val userName = account.givenName
-                val serverAuth = account.serverAuthCode
                 val tokenId = account.id
 
-                Log.d(TAG, "my name: $userName, serverAuth: $serverAuth, tokenId: $tokenId")
-
-                this.run {
-                    val intent = Intent(this, MainActivity::class.java)
-                    startActivity(
-                        intent,
-                        ActivityOptions.makeSceneTransitionAnimation(this).toBundle()
-                    )
-                    finish()
+                val intent = Intent(this, MainActivity::class.java).apply {
+                    putExtra("userId", tokenId)
                 }
+                startActivity(
+                    intent,
+                    ActivityOptions.makeSceneTransitionAnimation(this).toBundle()
+                )
+                finish()
 
 
             } catch (e: ApiException) {
@@ -65,24 +58,19 @@ class LoginActivity : AppCompatActivity() {
             requestGoogleLogin()
         }
 
-        var gsa = GoogleSignIn.getLastSignedInAccount(this)
+        val gsa = GoogleSignIn.getLastSignedInAccount(this)
 
         if (gsa != null && gsa.id != null) { // 이미 로그인된 사용자의 경우
-
+            val intent = Intent(this, MainActivity::class.java).apply {
+                putExtra("userId", gsa.id)
+            }
+            startActivity(
+                intent,
+                ActivityOptions.makeSceneTransitionAnimation(this).toBundle()
+            )
+            finish()
         }
 
-        loginViewModel.loginStatus.observe(this) {
-
-        }
-
-
-//        loginViewModel.loginStatus.observe(this) {
-//            if (it == LoginStatus.Login) {
-//                val intent = Intent(this, MainActivity::class.java)
-//                startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
-//                finish()
-//            }
-//        }
     }
 
     private fun requestGoogleLogin() { // 로그인 하는 함수

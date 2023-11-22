@@ -35,13 +35,15 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        mainViewModel.setUserId(GoogleSignIn.getLastSignedInAccount(this)?.idToken.toString())
+
         CoroutineScope(Dispatchers.IO).launch {
             withContext(Dispatchers.IO) {
                 createHealthClient()
             }
         }
 
-//        mainViewModel.fetchUserId()
+        dictionaryViewModel.initPokemonList()
 
         mainViewModel.myPokemonSet.observe(this) {
             dictionaryViewModel.updateUserPokemonList(mainViewModel.user.value ?: User(""), it)
@@ -85,7 +87,6 @@ class MainActivity : AppCompatActivity() {
                     // Result wasn't from Google Fit
                 }
             }
-
             else -> {
                 // Permission not granted
             }
