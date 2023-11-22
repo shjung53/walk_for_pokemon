@@ -1,8 +1,12 @@
 package com.ssafy.walkforpokemon.data.datasource
 
+import android.content.Context
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.fitness.Fitness
+import com.google.android.gms.fitness.FitnessOptions
 import com.google.android.gms.fitness.HistoryClient
 import com.google.android.gms.fitness.data.DataType
 import com.google.android.gms.fitness.data.Field
@@ -18,19 +22,15 @@ import javax.inject.Inject
 private const val TAG = "HealthDataSource"
 
 class HealthDataSource @Inject constructor() {
-    private lateinit var client: HistoryClient
-
-    fun initializeClient(client: HistoryClient): Result<SuccessOrFailure> {
-        return try {
-            this.client = client
-            Result.success(SuccessOrFailure.Success)
-        } catch (exception: Exception) {
-            Result.failure(exception)
-        }
-    }
-
     @RequiresApi(Build.VERSION_CODES.O)
-    suspend fun fetchStepCount(): Result<Int> {
+    suspend fun fetchStepCount(context: Context): Result<Int> {
+
+        val fitnessOptions = FitnessOptions.builder()
+            .addDataType(DataType.TYPE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
+            .addDataType(DataType.AGGREGATE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
+            .build()
+        val account = GoogleSignIn.getAccountForExtension(context, fitnessOptions)
+
         val now = LocalDateTime.now()
         val start = now.toLocalDate().atStartOfDay()
         val end = now.toLocalDate().atTime(LocalTime.MAX)
@@ -44,7 +44,7 @@ class HealthDataSource @Inject constructor() {
             .build()
 
         val result = suspendCancellableCoroutine { continuation ->
-            client
+            Fitness.getHistoryClient(context, account)
                 .readData(readRequest)
                 .addOnSuccessListener { response ->
                     val stepCount =

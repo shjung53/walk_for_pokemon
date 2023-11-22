@@ -28,19 +28,18 @@ class DictionaryViewModel @Inject constructor(
             initPokemonListUseCase.invoke().fold(
                 onSuccess = {
                     _pokemonList.value = it
-                    _myPokemonList.value = it
                 },
                 onFailure = {},
             )
         }
     }
 
-    fun updateUserPokemonList(user: User, userPokemonSet: MutableSet<Int>) {
+    fun updateUserPokemonList(mainPokemonId: Int, userPokemonSet: MutableSet<Int>) {
         pokemonList.value?.let {
             val newPokemonList = it.map { pokemon ->
                 pokemon.copy(
                     isActive = userPokemonSet.contains(pokemon.id),
-                    isMain = pokemon.id == user.mainPokemon,
+                    isMain = pokemon.id == mainPokemonId,
                 )
             }
             _myPokemonList.value = newPokemonList

@@ -3,7 +3,6 @@ package com.ssafy.walkforpokemon.domain.health
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.ssafy.walkforpokemon.SuccessOrFailure
-import com.ssafy.walkforpokemon.data.repository.HealthRepository
 import com.ssafy.walkforpokemon.data.repository.UserRepository
 import javax.inject.Inject
 

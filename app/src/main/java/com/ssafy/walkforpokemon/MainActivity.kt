@@ -8,18 +8,12 @@ import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.fitness.Fitness
 import com.google.android.gms.fitness.FitnessOptions
 import com.google.android.gms.fitness.data.DataType
-import com.ssafy.walkforpokemon.data.dataclass.User
 import com.ssafy.walkforpokemon.databinding.ActivityMainBinding
 import com.ssafy.walkforpokemon.viewmodels.DictionaryViewModel
 import com.ssafy.walkforpokemon.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -34,30 +28,24 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        checkFitnessPermissions()
 
-        mainViewModel.setUserId(GoogleSignIn.getLastSignedInAccount(this)?.idToken.toString())
-
-        CoroutineScope(Dispatchers.IO).launch {
-            withContext(Dispatchers.IO) {
-                createHealthClient()
-            }
-        }
-
+        mainViewModel.setUserId(this, GoogleSignIn.getLastSignedInAccount(this)?.idToken.toString())
         dictionaryViewModel.initPokemonList()
 
         mainViewModel.myPokemonSet.observe(this) {
-            dictionaryViewModel.updateUserPokemonList(mainViewModel.user.value ?: User(""), it)
+            dictionaryViewModel.updateUserPokemonList(mainViewModel.mainPokemon.value?: 0, it)
         }
         mainViewModel.mainPokemon.observe(this) {
             dictionaryViewModel.updateUserPokemonList(
-                mainViewModel.user.value ?: User(""),
+                mainViewModel.mainPokemon.value?: 0,
                 mainViewModel.myPokemonSet.value ?: mutableSetOf(),
             )
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun createHealthClient() {
+    private fun checkFitnessPermissions() {
         fitnessOptions = FitnessOptions.builder()
             .addDataType(DataType.TYPE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
             .addDataType(DataType.AGGREGATE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
@@ -73,7 +61,7 @@ class MainActivity : AppCompatActivity() {
                 fitnessOptions,
             )
         } else {
-            accessGoogleFit()
+
         }
     }
 
@@ -82,7 +70,7 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         when (resultCode) {
             Activity.RESULT_OK -> when (requestCode) {
-                8888 -> accessGoogleFit()
+                8888 -> {}
                 else -> {
                     // Result wasn't from Google Fit
                 }
@@ -91,11 +79,5 @@ class MainActivity : AppCompatActivity() {
                 // Permission not granted
             }
         }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun accessGoogleFit() {
-        val account = GoogleSignIn.getAccountForExtension(this, fitnessOptions)
-        mainViewModel.initHealthClient(Fitness.getHistoryClient(this, account))
     }
 }

@@ -108,10 +108,10 @@ class UserDataSource @Inject constructor() {
     }
 
     suspend fun updateMainPokemon(
-        user: User,
+        userId: String, pokemonId: Int
     ): Result<SuccessOrFailure> {
         var documentId = ""
-        Firebase.firestore.collection("user").whereEqualTo("id", user.id).get()
+        Firebase.firestore.collection("user").whereEqualTo("id", userId).get()
             .addOnSuccessListener { result ->
                 for (document in result) {
                     documentId = document.id
@@ -121,7 +121,7 @@ class UserDataSource @Inject constructor() {
         val result = suspendCancellableCoroutine { continuation ->
             Firebase.firestore.collection("user").document(documentId).update(
                 "mainPokemon",
-                user.mainPokemon,
+                pokemonId,
             ).addOnSuccessListener { documentReference ->
                 continuation.resume(Result.success(SuccessOrFailure.Success), null)
                 Log.d(

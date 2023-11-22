@@ -1,15 +1,16 @@
 package com.ssafy.walkforpokemon.dialogs
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.ssafy.walkforpokemon.R
-import com.ssafy.walkforpokemon.data.dataclass.User
 import com.ssafy.walkforpokemon.databinding.DialogDrawConfirmBinding
 import com.ssafy.walkforpokemon.viewmodels.DictionaryViewModel
 import com.ssafy.walkforpokemon.viewmodels.MainViewModel
@@ -41,6 +42,7 @@ class DrawDialog : DialogFragment() {
         return binding.root
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -55,13 +57,13 @@ class DrawDialog : DialogFragment() {
             val newPokemonId = getNewPokemonId()
             val nowSet = mainViewModel.myPokemonSet.value ?: mutableSetOf()
             if (nowSet.contains(newPokemonId)) duplication = true
-            mainViewModel.drawPokemon(newPokemonId)
+            mainViewModel.drawNewPokemon(newPokemonId)
 
             mainViewModel.myPokemonSet.observe(this) {
                 lifecycleScope.launch {
                     withContext(Dispatchers.Main) {
                         dictionaryViewModel.updateUserPokemonList(
-                            mainViewModel.user.value ?: User(""),
+                            mainViewModel.mainPokemon.value?: 0,
                             mainViewModel.myPokemonSet.value ?: mutableSetOf(),
                         )
                     }

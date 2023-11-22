@@ -1,12 +1,14 @@
 package com.ssafy.walkforpokemon
 
 import android.app.Application
+import com.google.android.gms.fitness.HistoryClient
 import com.google.firebase.FirebaseApp
 import com.navercorp.nid.NaverIdLoginSDK
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
 class GlobalApplication : Application() {
+
     override fun onCreate() {
         super.onCreate()
         NaverIdLoginSDK.initialize(
@@ -16,5 +18,6 @@ class GlobalApplication : Application() {
             "Walk for Pokemon",
         )
         FirebaseApp.initializeApp(this)
+
     }
 }

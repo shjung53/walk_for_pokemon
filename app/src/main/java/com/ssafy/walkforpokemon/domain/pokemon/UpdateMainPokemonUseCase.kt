@@ -8,8 +8,8 @@ import javax.inject.Inject
 class UpdateMainPokemonUseCase @Inject constructor(
     private val userRepository: UserRepository,
 ) {
-    suspend operator fun invoke(user: User): Result<SuccessOrFailure> {
-        userRepository.updateMainPokemon(user).fold(
+    suspend operator fun invoke(userId: String, pokemonId: Int): Result<SuccessOrFailure> {
+        userRepository.updateMainPokemon(userId, pokemonId).fold(
             onSuccess = { return Result.success(it) },
             onFailure = { return Result.failure(it) },
         )

@@ -1,15 +1,20 @@
 package com.ssafy.walkforpokemon
 
+import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.fitness.Fitness
+import com.google.android.gms.fitness.FitnessOptions
+import com.google.android.gms.fitness.data.DataType
 import com.ssafy.walkforpokemon.databinding.FragmentHomeBinding
 import com.ssafy.walkforpokemon.viewmodels.DictionaryViewModel
 import com.ssafy.walkforpokemon.viewmodels.MainViewModel
@@ -35,6 +40,7 @@ class HomeFragment : Fragment() {
         return binding.root
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -51,8 +57,23 @@ class HomeFragment : Fragment() {
             1. user data에서 마일리지, 걸음 수 받아와서 xml에 집어넣기
          */
 
-        binding.currentMileage.text = String.format("%,d", mainViewModel.mileage.value) // 여기 집어넣기
+        binding.currentMileage.text =
+            String.format("%,d", mainViewModel.currentMileage.value) // 여기 집어넣기
         binding.nowSteps.text = String.format("%,d", mainViewModel.stepCount.value)
+
+        binding.stepImage.setOnClickListener {
+            mainViewModel.refreshStepCount(requireActivity())
+        }
+
+        mainViewModel.stepCount.observe(requireActivity()) {
+            mainViewModel.calculateStepCountToAdd(it)
+        }
+
+        mainViewModel.currentMileage.observe(requireActivity()) {
+            binding.currentMileage.text =
+                String.format("%,d", mainViewModel.currentMileage.value) // 여기 집어넣기
+            binding.nowSteps.text = String.format("%,d", mainViewModel.stepCount.value)
+        }
 
         setNavigation()
     }
