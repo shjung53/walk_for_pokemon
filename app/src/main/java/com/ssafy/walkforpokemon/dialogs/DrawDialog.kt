@@ -62,8 +62,10 @@ class DrawDialog : DialogFragment() {
             }
             val newPokemonId = getNewPokemonId()
             val nowSet = mainViewModel.myPokemonSet.value ?: mutableSetOf()
-            if (nowSet.contains(newPokemonId)) duplication = true
-            mainViewModel.drawPokemon(newPokemonId)
+            if (nowSet.contains(newPokemonId)) {
+                duplication = true
+            }
+            mainViewModel.drawPokemon(newPokemonId, duplication)
 
             mainViewModel.myPokemonSet.observe(this) {
                 lifecycleScope.launch {
