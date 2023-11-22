@@ -8,6 +8,7 @@
     tools:context=".HomeFragment">
 
     <LinearLayout
+        android:id="@+id/currencyLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
@@ -36,9 +37,8 @@
                 android:layout_marginStart="16dp"
                 android:background="@drawable/outlined_background"
                 android:fontFamily="@font/cartoon"
-                android:gravity="right"
+                android:textAlignment="textEnd"
                 android:paddingStart="24dp"
-                android:text="10,000,000"
                 app:layout_constraintBottom_toBottomOf="@+id/coinImage"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -66,15 +66,24 @@
                 android:layout_marginStart="16dp"
                 android:background="@drawable/outlined_background_sky"
                 android:fontFamily="@font/cartoon"
-                android:gravity="right"
+                android:textAlignment="textEnd"
                 android:paddingStart="24dp"
-                android:text="10,000,000"
                 app:layout_constraintBottom_toBottomOf="@+id/stepImage"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/stepImage" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/refreshStepCountButton"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:src="@drawable/baseline_refresh_24"
+        app:layout_constraintStart_toEndOf="@id/currencyLayout"
+        app:layout_constraintBottom_toBottomOf="@id/currencyLayout"
+        android:layout_marginStart="8dp"
+        />
 
     <ImageView
         android:id="@+id/logoutButton"

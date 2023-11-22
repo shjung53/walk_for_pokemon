@@ -5,12 +5,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.ssafy.walkforpokemon.CustomToast
 import com.ssafy.walkforpokemon.R
 import com.ssafy.walkforpokemon.databinding.DialogDrawConfirmBinding
 import com.ssafy.walkforpokemon.viewmodels.DictionaryViewModel
@@ -56,7 +56,7 @@ class DrawDialog : DialogFragment() {
         }
         binding.confirmButton.setOnClickListener {
             if ((mainViewModel.currentMileage.value ?: 0) < 1000) {
-                Toast.makeText(requireActivity(), "마일리지가 부족합니다", Toast.LENGTH_SHORT).show()
+                CustomToast.createAndShow(requireActivity(), "마일리지가 부족합니다").show()
                 this@DrawDialog.dismiss()
                 return@setOnClickListener
             }

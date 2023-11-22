@@ -115,7 +115,7 @@ class MainViewModel @Inject constructor(
     @RequiresApi(Build.VERSION_CODES.O)
     fun drawPokemon(newPokemonId: Int, duplication: Boolean) {
         var cost = 1000
-        if(duplication) cost = 800
+        if (duplication) cost = 800
         val newCurrentMileage = (currentMileage.value ?: 0) - cost
         viewModelScope.launch {
             updateMileageUseCase.invoke(userId, newCurrentMileage).fold(

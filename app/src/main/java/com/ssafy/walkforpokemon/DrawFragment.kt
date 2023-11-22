@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -156,10 +155,9 @@ class DrawFragment() : Fragment() {
                 pokemonFadeIn.start()
                 pokeTextFadeIn.start()
                 if (duplication) {
-                    Toast.makeText(
+                    CustomToast.createAndShow(
                         requireActivity(),
                         "이미 존재하는 포켓몬은 200마일리지로 전환됩니다!",
-                        Toast.LENGTH_SHORT,
                     ).show()
                 }
             }

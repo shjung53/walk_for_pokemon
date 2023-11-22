@@ -55,7 +55,7 @@ class HomeFragment : Fragment() {
             String.format("%,d", mainViewModel.currentMileage.value) // 여기 집어넣기
         binding.nowSteps.text = String.format("%,d", mainViewModel.stepCount.value)
 
-        binding.stepImage.setOnClickListener {
+        binding.refreshStepCountButton.setOnClickListener {
             mainViewModel.refreshStepCount(requireActivity())
         }
 

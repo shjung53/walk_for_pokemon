@@ -7,7 +7,6 @@ import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -83,7 +82,7 @@ class DictionaryFragment : Fragment() {
         dictionaryAdapter.setOnItemClickListener(object : DictionaryAdapter.OnItemClickListener {
             override fun onClick(pokemon: Pokemon) {
                 if (!pokemon.isActive) {
-                    Toast.makeText(requireActivity(), "아직 얻지 못한 포켓몬입니다!", Toast.LENGTH_SHORT).show()
+                    CustomToast.createAndShow(requireActivity(), "아직 얻지 못한 포켓몬입니다!").show()
                 } else {
                     val action =
                         DictionaryFragmentDirections.actionDictionaryToDictionaryDetail(pokemon.id)
