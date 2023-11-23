@@ -1,28 +1,31 @@
 package com.ssafy.walkforpokemon.dialogs
 
+import android.app.Dialog
+import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.provider.CalendarContract
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import com.bumptech.glide.Glide
+import com.ssafy.walkforpokemon.GlobalApplication
 import com.ssafy.walkforpokemon.R
 import com.ssafy.walkforpokemon.databinding.DialogLoadingBinding
 
-class LoadingDialog : DialogFragment() {
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
-        val binding = DialogLoadingBinding.inflate(layoutInflater, container, false)
+class LoadingDialog(context: Context) : Dialog(context) {
 
-        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val binding = DialogLoadingBinding.inflate(layoutInflater)
 
-        Glide.with(this).load(R.raw.charmander).into(binding.loadingImage)
+        this.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-        return binding.root
+        Glide.with(context).load(R.raw.charmander).into(binding.loadingImage)
+
+        setContentView(binding.root)
     }
+
 }

@@ -86,12 +86,8 @@ class UserDataSource @Inject constructor() {
             Firebase.firestore.collection("user").document(documentId).update(
                 "myPokemons",
                 FieldValue.arrayUnion(pokemonId),
-            ).addOnSuccessListener { documentReference ->
+            ).addOnSuccessListener {
                 continuation.resume(Result.success(SuccessOrFailure.Success), null)
-                Log.d(
-                    TAG,
-                    "updateUserPokemonList() called with: documentReference = $documentReference",
-                )
             }.addOnFailureListener { e ->
                 continuation.resume(
                     Result.failure(
@@ -156,25 +152,32 @@ class UserDataSource @Inject constructor() {
                 }
             }.await()
 
-        val result = suspendCancellableCoroutine<Result<SuccessOrFailure>> { continuation ->
-            Firebase.firestore.collection("user").document(documentId).update(
-                "currentMileage",
-                newCurrentMileage,
-            ).addOnSuccessListener { documentReference ->
-                continuation.resume(Result.success(SuccessOrFailure.Success), null)
-                Log.d(TAG, "addMileage() called with: documentReference = $documentReference")
-            }.addOnFailureListener { e ->
-                continuation.resume(
-                    Result.failure(
-                        Exception(
-                            errorDescription ?: "unknown error",
+        try {
+            val result = suspendCancellableCoroutine<Result<SuccessOrFailure>> { continuation ->
+                Firebase.firestore.collection("user").document(documentId).update(
+                    "currentMileage",
+                    newCurrentMileage,
+                ).addOnSuccessListener {
+                    continuation.resume(Result.success(SuccessOrFailure.Success), null)
+                }.addOnFailureListener { e ->
+                    continuation.resume(
+                        Result.failure(
+                            Exception(
+                                errorDescription ?: "unknown error",
+                            ),
                         ),
-                    ),
-                    null,
-                )
-                Log.d(TAG, "addMileage() called with: e = $e")
+                        null,
+                    )
+                    Log.d(TAG, "addMileage() called with: e = $e")
+                }
             }
+            return result
+        } catch (e: Exception) {
+            Log.d(
+                TAG,
+                "updateMileageUseCase() called with: userId = $userId, newCurrentMileage = $newCurrentMileage"
+            )
+            return Result.failure(e)
         }
-        return result
     }
 }

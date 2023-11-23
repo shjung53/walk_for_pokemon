@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ssafy.walkforpokemon.SuccessOrFailure
 import com.ssafy.walkforpokemon.domain.health.FetchStepCountUseCase
 import com.ssafy.walkforpokemon.domain.health.UpdateMileageUseCase
 import com.ssafy.walkforpokemon.domain.pokemon.UpdateMainPokemonUseCase
@@ -17,6 +18,7 @@ import com.ssafy.walkforpokemon.domain.user.RegisterUserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -147,16 +149,15 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun updateMainPokemon(pokemonId: Int) {
-        viewModelScope.launch {
-            updateMainPokemonUseCase.invoke(userId, pokemonId).fold(
-                onSuccess = {
-                    _mainPokemon.value = pokemonId
-                    state["mainPokemon"] = _mainPokemon.value
-                },
-                onFailure = {},
-            )
-        }
+    suspend fun updateMainPokemon(pokemonId: Int): Result<SuccessOrFailure> {
+        updateMainPokemonUseCase.invoke(userId, pokemonId).fold(
+            onSuccess = {
+                _mainPokemon.value = pokemonId
+                state["mainPokemon"] = _mainPokemon.value
+                return Result.success(it)
+            },
+            onFailure = { return Result.failure(it) },
+        )
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

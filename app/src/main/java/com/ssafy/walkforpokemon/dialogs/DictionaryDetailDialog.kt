@@ -12,12 +12,16 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
+import com.ssafy.walkforpokemon.CustomToast
 import com.ssafy.walkforpokemon.DrawFragmentArgs
 import com.ssafy.walkforpokemon.R
 import com.ssafy.walkforpokemon.data.dataclass.Pokemon
 import com.ssafy.walkforpokemon.databinding.DialogDictionaryDetailBinding
 import com.ssafy.walkforpokemon.viewmodels.DictionaryViewModel
 import com.ssafy.walkforpokemon.viewmodels.MainViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class DictionaryDetailDialog : DialogFragment() {
 
@@ -73,8 +77,17 @@ class DictionaryDetailDialog : DialogFragment() {
         }
 
         binding.setMainPokemonButton.setOnClickListener {
-            mainViewModel.updateMainPokemon(pokemonId)
-            findNavController().navigateUp()
+            CoroutineScope(Dispatchers.Main).launch {
+                mainViewModel.updateMainPokemon(pokemonId).fold(
+                    onSuccess = { findNavController().navigateUp() },
+                    onFailure = {
+                        CustomToast.createAndShow(
+                            requireActivity(),
+                            "대표 포켓몬 등록에 실패했습니다. 다시 시도해주세요!"
+                        )
+                    }
+                )
+            }
         }
     }
 

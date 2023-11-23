@@ -70,6 +70,7 @@ class DictionaryAdapter(private val context: Context, private var itemList: List
 
     override fun onBindViewHolder(holder: DictionaryAdapter.DictionaryViewHolder, position: Int) {
         holder.bind(itemList[position])
+        Glide.with(context).load(itemList).preload()
     }
 
     fun setDataList(newItemList: List<Pokemon>) {

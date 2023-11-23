@@ -11,9 +11,14 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.fitness.FitnessOptions
 import com.google.android.gms.fitness.data.DataType
 import com.ssafy.walkforpokemon.databinding.ActivityMainBinding
+import com.ssafy.walkforpokemon.dialogs.LoadingDialog
 import com.ssafy.walkforpokemon.viewmodels.DictionaryViewModel
 import com.ssafy.walkforpokemon.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -38,7 +43,11 @@ class MainActivity : AppCompatActivity() {
         } else {
             mainViewModel.setUserId(this, userId)
         }
-        dictionaryViewModel.initPokemonList()
+
+        CoroutineScope(Dispatchers.Main).launch {
+            dictionaryViewModel.initPokemonList()
+        }
+
 
         mainViewModel.myPokemonSet.observe(this) {
             dictionaryViewModel.updateUserPokemonList(mainViewModel.mainPokemon.value ?: 0, it)

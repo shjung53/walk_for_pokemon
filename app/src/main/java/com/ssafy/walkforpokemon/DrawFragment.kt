@@ -38,6 +38,8 @@ class DrawFragment() : Fragment() {
 
     private var duplication = false
 
+    private var backgroundImageResId: Int = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val callback: OnBackPressedCallback =
@@ -48,6 +50,7 @@ class DrawFragment() : Fragment() {
             }
         requireActivity().onBackPressedDispatcher.addCallback(this, callback)
     }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -93,6 +96,21 @@ class DrawFragment() : Fragment() {
 
             Glide.with(this).load(it.imageOfficial)
                 .into(binding.pokemonImage)
+
+            backgroundImageResId = when (TypeTranslator.translate(it.type[0])) {
+                PokemonType.Ice -> R.drawable.ice_background
+                PokemonType.Poison -> R.drawable.poison_background
+                PokemonType.Fire -> R.drawable.fire_background
+                PokemonType.Water -> R.drawable.water_background
+                PokemonType.Electric -> R.drawable.electric_background
+                PokemonType.Fairy -> R.drawable.fairy_background
+                PokemonType.Psychic -> R.drawable.psychic_background
+                PokemonType.Flying, PokemonType.Dragon -> R.drawable.flying_dragon_background
+                PokemonType.Ghost, PokemonType.Dark -> R.drawable.ghost_dark_background
+                PokemonType.Normal, PokemonType.Grass, PokemonType.Bug -> R.drawable.normal_grass_bug_background
+                PokemonType.Ground, PokemonType.Rock, PokemonType.Steel, PokemonType.Fighting -> R.drawable.ground_rock_steel_fighting_background
+            }
+
         }
 
         binding.confirmButton.setOnClickListener {
@@ -161,6 +179,8 @@ class DrawFragment() : Fragment() {
             override fun onAnimationEnd(animation: Animator) {
                 // 애니메이션(fade out)이 끝나면 호출
                 binding.drawGif.visibility = View.GONE
+                binding.backgroundImage.setBackgroundResource(backgroundImageResId)
+                binding.backgroundImage.visibility = View.VISIBLE
                 binding.pokemonInfoLayout.visibility = View.VISIBLE
                 binding.confirmButton.visibility = View.VISIBLE
                 pokemonFadeIn.start()
