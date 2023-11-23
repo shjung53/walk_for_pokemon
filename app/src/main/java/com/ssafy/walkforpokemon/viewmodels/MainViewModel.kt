@@ -7,6 +7,7 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import com.ssafy.walkforpokemon.MileageException
 import com.ssafy.walkforpokemon.SuccessOrFailure
 import com.ssafy.walkforpokemon.domain.health.AddMileageUseCase
 import com.ssafy.walkforpokemon.domain.health.FetchStepCountUseCase
@@ -59,7 +60,7 @@ class MainViewModel @Inject constructor(
     init {
         _userId = state.get<String>("userId") ?: ""
         _myPokemonSet.value = state["myPokemonSet"] ?: mutableSetOf()
-        _mainPokemon.value = state["mainPokemon"] ?: 0
+        _mainPokemon.value = state["mainPokemon"] ?: -1
         _addedMileage.value = state["addedMileage"] ?: 0
         _currentMileage.value = state["currentMileage"] ?: 0
         _stepCount.value = state["stepCount"] ?: 0
@@ -87,7 +88,6 @@ class MainViewModel @Inject constructor(
                 } else {
                     val newSet = mutableSetOf<Int>()
                     newSet.addAll(result.myPokemons)
-                    Log.d(TAG, "initUser() called with: result = $result")
                     _myPokemonSet.value = newSet
                     _mainPokemon.value = result.mainPokemon
                     _currentMileage.value = result.currentMileage
@@ -187,6 +187,11 @@ class MainViewModel @Inject constructor(
 
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun addMileageToUser(mileageToAdd: Int): Result<SuccessOrFailure> {
+        if ((mainPokemon.value ?: -1) == -1) {
+            return Result.failure(
+                MileageException(message = "needInit"),
+            )
+        }
         val newCurrentMileage = (currentMileage.value ?: 0) + mileageToAdd
         val newAddedMileage = (addedMileage.value ?: 0) + mileageToAdd
         addMileageUseCase.invoke(userId, newCurrentMileage, newAddedMileage).fold(

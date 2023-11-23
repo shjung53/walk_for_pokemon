@@ -229,10 +229,6 @@ class UserDataSource @Inject constructor() {
             }
             return result
         } catch (e: Exception) {
-            Log.d(
-                TAG,
-                "updateMileageUseCase() called with: userId = $userId, newCurrentMileage = $newCurrentMileage",
-            )
             return Result.failure(e)
         }
     }

@@ -69,7 +69,7 @@ class DrawDialog : DialogFragment(), LoadingView {
                 mainViewModel.drawPokemon(newPokemonId, duplication).fold(
                     onSuccess = {
                         dictionaryViewModel.updateUserPokemonList(
-                            mainViewModel.mainPokemon.value ?: 0,
+                            mainViewModel.mainPokemon.value ?: -1,
                             mainViewModel.myPokemonSet.value ?: mutableSetOf(),
                         )
                         val action = DrawDialogDirections.actionDrawDialogToDrawFragment(

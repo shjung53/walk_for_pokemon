@@ -1,5 +1,6 @@
 package com.ssafy.walkforpokemon.ui
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,6 +13,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.ssafy.walkforpokemon.R
 import com.ssafy.walkforpokemon.databinding.FragmentHomeBinding
 import com.ssafy.walkforpokemon.dialogs.LoadingDialog
@@ -22,9 +25,8 @@ import com.ssafy.walkforpokemon.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-
-private const val TAG = "HomeFragment"
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(), LoadingView {
@@ -67,16 +69,16 @@ class HomeFragment : Fragment(), LoadingView {
         }
 
         binding.refreshStepCountButton.setOnClickListener {
-            showLoading()
             CoroutineScope(Dispatchers.Main).launch {
+                showLoading()
                 mainViewModel.refreshStepCount(requireActivity()).fold(
                     onSuccess = { hideLoading() },
                     onFailure = {
+                        hideLoading()
                         CustomToast.createAndShow(
                             requireContext(),
                             getString(R.string.fail_refresh_step_count),
                         )
-                        hideLoading()
                     },
                 )
             }
@@ -96,6 +98,29 @@ class HomeFragment : Fragment(), LoadingView {
                 null,
                 dictionaryTransitionOption,
             )
+        }
+
+        binding.logoutButton.setOnClickListener {
+            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN)
+                .requestEmail()
+                .requestProfile()
+                .build()
+
+            val mGoogleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
+
+            val gsa = GoogleSignIn.getLastSignedInAccount(requireContext())
+
+            if (gsa != null && gsa.id != null) {
+                mGoogleSignInClient.signOut()
+                    .addOnCompleteListener(requireActivity()) {
+                        val intent = Intent(requireContext(), LoginActivity::class.java)
+                        intent.flags =
+                            Intent.FLAG_ACTIVITY_NEW_TASK or
+                            Intent.FLAG_ACTIVITY_CLEAR_TASK or
+                            Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        startActivity(intent)
+                    }
+            }
         }
     }
 
@@ -120,32 +145,42 @@ class HomeFragment : Fragment(), LoadingView {
         }
 
         mainViewModel.stepCount.observe(requireActivity()) {
-            showLoading()
             lifecycleScope.launch {
+                delay(300)
+                showLoading()
                 mainViewModel.calculateStepCountToAdd(it).fold(
                     onSuccess = {
+                        hideLoading()
                         if (_binding != null) {
                             binding.nowSteps.text =
                                 String.format("%,d", mainViewModel.stepCount.value)
                         }
-                        hideLoading()
                     },
                     onFailure = {
-                        CustomToast.createAndShow(
-                            requireContext(),
-                            getString(R.string.fail_refresh_step_count),
-                        )
-                        hideLoading()
+                        if (it.message == "needInit") {
+                            if (_binding != null) {
+                                binding.nowSteps.text =
+                                    String.format("%,d", mainViewModel.stepCount.value)
+                            }
+                        } else {
+                            hideLoading()
+                            CustomToast.createAndShow(
+                                requireContext(),
+                                getString(R.string.fail_refresh_step_count),
+                            )
+                        }
                     },
                 )
             }
         }
 
         mainViewModel.currentMileage.observe(requireActivity()) {
+            showLoading()
             if (_binding != null) {
                 binding.currentMileage.text =
                     String.format("%,d", mainViewModel.currentMileage.value) // 여기 집어넣기
             }
+            hideLoading()
         }
     }
 

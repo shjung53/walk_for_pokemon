@@ -1,20 +1,19 @@
-package com.ssafy.walkforpokemon
+package com.ssafy.walkforpokemon.ui
 
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager.NameNotFoundException
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ReportFragment.Companion.reportFragment
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.fitness.FitnessOptions
 import com.google.android.gms.fitness.data.DataType
 import com.ssafy.walkforpokemon.R
 import com.ssafy.walkforpokemon.databinding.ActivityMainBinding
+import com.ssafy.walkforpokemon.dialogs.FitnessRequiredDialog
 import com.ssafy.walkforpokemon.dialogs.LoadingDialog
 import com.ssafy.walkforpokemon.dialogs.LoadingView
 import com.ssafy.walkforpokemon.util.CustomToast
@@ -26,14 +25,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), LoadingView {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var fitnessOptions: FitnessOptions
     private val mainViewModel: MainViewModel by viewModels()
     private val dictionaryViewModel: DictionaryViewModel by viewModels()
     private val fitnessAppName = "com.google.android.apps.fitness"
-    private val activity = this
     private lateinit var loadingDialog: LoadingDialog
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -52,7 +50,6 @@ class MainActivity : AppCompatActivity() {
         } else {
             initUserAndPokemonList(userId)
         }
-
 
         checkFitnessInstall()
 
@@ -120,17 +117,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
     @RequiresApi(Build.VERSION_CODES.O)
-    fun checkFitnessInstall(){
-
+    fun checkFitnessInstall() {
         try {
             val packageInfo = packageManager.getPackageInfo(fitnessAppName, 0)
-        } catch (e : NameNotFoundException) {
-            supportFragmentManager.beginTransaction().add(FitnessRequiredDialog(), FitnessRequiredDialog().tag).commit()
+        } catch (e: NameNotFoundException) {
+            supportFragmentManager.beginTransaction()
+                .add(FitnessRequiredDialog(), FitnessRequiredDialog().tag).commit()
         }
     }
-
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

@@ -33,10 +33,6 @@ class FitnessRequiredDialog : DialogFragment() {
         savedInstanceState: Bundle?,
     ): View {
         _binding = DialogDrawConfirmBinding.inflate(inflater, container, false)
-        Log.d(
-            TAG,
-            "onCreateView() called with: inflater = $inflater, container = $container, savedInstanceState = $savedInstanceState"
-        )
         return binding.root
     }
 
@@ -46,17 +42,17 @@ class FitnessRequiredDialog : DialogFragment() {
 
         Log.d(
             TAG,
-            "onViewCreated() called with: view = $view, savedInstanceState = $savedInstanceState"
+            "onViewCreated() called with: view = $view, savedInstanceState = $savedInstanceState",
         )
 
         this.isCancelable = false
 
-        binding.message.text = "Walk for Pokemon을 사용하기 위해서는 Google Fitness 앱이 필요합니다.\n설치하시겠습니까?"
+        binding.message.text = getString(R.string.install_fitness)
 
         binding.cancelButton.setOnClickListener {
-            requireActivity().finishAffinity() //해당 앱의 루트 액티비티를 종료시킨다. (API  16미만은 ActivityCompat.finishAffinity())
+            requireActivity().finishAffinity()
 
-            System.runFinalization() //현재 작업중인 쓰레드가 다 종료되면, 종료 시키라는 명령어이다.
+            System.runFinalization() // 현재 작업중인 쓰레드가 다 종료되면, 종료 시키라는 명령어이다.
 
             System.exit(0) //
         }
@@ -67,7 +63,6 @@ class FitnessRequiredDialog : DialogFragment() {
             this.dismiss()
         }
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()
