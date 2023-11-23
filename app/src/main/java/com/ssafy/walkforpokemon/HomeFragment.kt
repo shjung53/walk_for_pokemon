@@ -1,7 +1,9 @@
 package com.ssafy.walkforpokemon
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,11 +13,14 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.ssafy.walkforpokemon.databinding.FragmentHomeBinding
 import com.ssafy.walkforpokemon.viewmodels.DictionaryViewModel
 import com.ssafy.walkforpokemon.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
+private const val TAG = "HomeFragment_싸피"
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
 
@@ -67,6 +72,27 @@ class HomeFragment : Fragment() {
         mainViewModel.currentMileage.observe(requireActivity()) {
             binding.currentMileage.text =
                 String.format("%,d", mainViewModel.currentMileage.value) // 여기 집어넣기
+        }
+
+        binding.logoutButton.setOnClickListener {
+            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN)
+                .requestEmail()
+                .requestProfile()
+                .build()
+
+            val mGoogleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
+
+            val gsa = GoogleSignIn.getLastSignedInAccount(requireContext())
+
+            if (gsa != null && gsa.id != null) {
+                mGoogleSignInClient.signOut()
+                    .addOnCompleteListener(requireActivity()) {
+                        Log.d(TAG, "onViewCreated: 로그아웃 성공")
+                        val intent = Intent(requireContext(), LoginActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        startActivity(intent)
+                    }
+            }
         }
 
         setNavigation()

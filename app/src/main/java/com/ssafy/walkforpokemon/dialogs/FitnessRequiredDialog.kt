@@ -9,23 +9,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
-import androidx.core.app.ActivityCompat
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
-import com.ssafy.walkforpokemon.CustomToast
-import com.ssafy.walkforpokemon.MainActivity
 import com.ssafy.walkforpokemon.R
 import com.ssafy.walkforpokemon.databinding.DialogDrawConfirmBinding
-import com.ssafy.walkforpokemon.viewmodels.DictionaryViewModel
-import com.ssafy.walkforpokemon.viewmodels.MainViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import kotlin.random.Random
 
 private const val TAG = "FitnessRequiredDialog_싸피"
+
 class FitnessRequiredDialog : DialogFragment() {
 
     private var _binding: DialogDrawConfirmBinding? = null
@@ -75,6 +64,7 @@ class FitnessRequiredDialog : DialogFragment() {
             val url = "market://details?id=" + fitnessAppName
             val i = Intent(Intent.ACTION_VIEW, Uri.parse(url))
             startActivity(i)
+            this.dismiss()
         }
     }
 
