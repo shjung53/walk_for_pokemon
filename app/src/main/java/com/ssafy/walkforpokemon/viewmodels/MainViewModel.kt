@@ -8,8 +8,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.ssafy.walkforpokemon.SuccessOrFailure
+import com.ssafy.walkforpokemon.domain.health.AddMileageUseCase
 import com.ssafy.walkforpokemon.domain.health.FetchStepCountUseCase
-import com.ssafy.walkforpokemon.domain.health.UpdateMileageUseCase
+import com.ssafy.walkforpokemon.domain.health.UseMileageUseCase
 import com.ssafy.walkforpokemon.domain.pokemon.UpdateMainPokemonUseCase
 import com.ssafy.walkforpokemon.domain.user.DrawPokemonUseCase
 import com.ssafy.walkforpokemon.domain.user.FetchUserUseCase
@@ -27,7 +28,8 @@ class MainViewModel @Inject constructor(
     private val fetchStepCountUseCase: FetchStepCountUseCase,
     private val drawPokemonUseCase: DrawPokemonUseCase,
     private val updateMainPokemonUseCase: UpdateMainPokemonUseCase,
-    private val updateMileageUseCase: UpdateMileageUseCase,
+    private val useMileageUseCase: UseMileageUseCase,
+    private val addMileageUseCase: AddMileageUseCase,
 ) : ViewModel() {
     private var _userId = ""
         set(value) {
@@ -116,7 +118,7 @@ class MainViewModel @Inject constructor(
         var cost = 1000
         if (duplication) cost = 800
         val newCurrentMileage = (currentMileage.value ?: 0) - cost
-        updateMileageUseCase.invoke(userId, newCurrentMileage).fold(
+        useMileageUseCase.invoke(userId, newCurrentMileage).fold(
             onSuccess = {
                 _currentMileage.value = newCurrentMileage
                 state["currentMileage"] = _currentMileage.value
@@ -186,10 +188,11 @@ class MainViewModel @Inject constructor(
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun addMileageToUser(mileageToAdd: Int): Result<SuccessOrFailure> {
         val newCurrentMileage = (currentMileage.value ?: 0) + mileageToAdd
-        updateMileageUseCase.invoke(userId, newCurrentMileage).fold(
+        val newAddedMileage = (addedMileage.value ?: 0) + mileageToAdd
+        addMileageUseCase.invoke(userId, newCurrentMileage, newAddedMileage).fold(
             onSuccess = {
                 _currentMileage.value = newCurrentMileage
-                _addedMileage.value = _addedMileage.value?.plus(mileageToAdd)
+                _addedMileage.value = newAddedMileage
                 state["currentMileage"] = _currentMileage.value
                 state["addedMileage"] = _addedMileage.value
                 return Result.success(it)

@@ -6,10 +6,10 @@ import com.ssafy.walkforpokemon.SuccessOrFailure
 import com.ssafy.walkforpokemon.data.repository.UserRepository
 import javax.inject.Inject
 
-class UpdateMileageUseCase @Inject constructor(private val userRepository: UserRepository) {
+class UseMileageUseCase @Inject constructor(private val userRepository: UserRepository) {
     @RequiresApi(Build.VERSION_CODES.O)
     suspend operator fun invoke(userId: String, newCurrentMileage: Int): Result<SuccessOrFailure> {
-        userRepository.updateMileageUseCase(userId, newCurrentMileage).fold(
+        userRepository.useMileageUseCase(userId, newCurrentMileage).fold(
             onSuccess = { return Result.success(it) },
             onFailure = { return Result.failure(it) },
         )

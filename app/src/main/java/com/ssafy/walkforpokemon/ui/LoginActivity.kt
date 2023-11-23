@@ -33,6 +33,7 @@ class LoginActivity() : AppCompatActivity(), LoadingView {
 
             val tokenId = account.id
             try { // 로그인 잘 된 경우!!
+                hideLoading()
                 val intent = Intent(this, MainActivity::class.java).apply {
                     putExtra("userId", tokenId)
                 }

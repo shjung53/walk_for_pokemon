@@ -31,11 +31,26 @@ class UserRepository @Inject constructor(private val userDataSource: UserDataSou
         )
     }
 
-    suspend fun updateMileageUseCase(
+    suspend fun useMileageUseCase(
         userId: String,
         newCurrentMileage: Int,
     ): Result<SuccessOrFailure> {
-        userDataSource.updateMileageUseCase(userId, newCurrentMileage).fold(
+        userDataSource.updateCurrentMileageUseCase(userId, newCurrentMileage).fold(
+            onSuccess = { return Result.success(it) },
+            onFailure = { return Result.failure(it) },
+        )
+    }
+
+    suspend fun addMileageUseCase(
+        userId: String,
+        newCurrentMileage: Int,
+        newAddedMileage: Int,
+    ): Result<SuccessOrFailure> {
+        userDataSource.updateCurrentAndAddedMileageUseCase(
+            userId,
+            newCurrentMileage,
+            newAddedMileage,
+        ).fold(
             onSuccess = { return Result.success(it) },
             onFailure = { return Result.failure(it) },
         )

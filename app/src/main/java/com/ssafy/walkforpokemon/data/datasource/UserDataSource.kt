@@ -152,7 +152,7 @@ class UserDataSource @Inject constructor() {
         }
     }
 
-    suspend fun updateMileageUseCase(
+    suspend fun updateCurrentMileageUseCase(
         userId: String,
         newCurrentMileage: Int,
     ): Result<SuccessOrFailure> {
@@ -169,6 +169,50 @@ class UserDataSource @Inject constructor() {
                 Firebase.firestore.collection("user").document(documentId).update(
                     "currentMileage",
                     newCurrentMileage,
+                ).addOnSuccessListener {
+                    continuation.resume(Result.success(SuccessOrFailure.Success), null)
+                }.addOnFailureListener { e ->
+                    continuation.resume(
+                        Result.failure(
+                            Exception(
+                                errorDescription ?: "unknown error",
+                            ),
+                        ),
+                        null,
+                    )
+                    Log.d(TAG, "addMileage() called with: e = $e")
+                }
+            }
+            return result
+        } catch (e: Exception) {
+            Log.d(
+                TAG,
+                "updateMileageUseCase() called with: userId = $userId, newCurrentMileage = $newCurrentMileage",
+            )
+            return Result.failure(e)
+        }
+    }
+
+    suspend fun updateCurrentAndAddedMileageUseCase(
+        userId: String,
+        newCurrentMileage: Int,
+        newAddedMileage: Int,
+    ): Result<SuccessOrFailure> {
+        var documentId = ""
+        Firebase.firestore.collection("user").whereEqualTo("id", userId).get()
+            .addOnSuccessListener { result ->
+                for (document in result) {
+                    documentId = document.id
+                }
+            }.await()
+
+        try {
+            val result = suspendCancellableCoroutine<Result<SuccessOrFailure>> { continuation ->
+                Firebase.firestore.collection("user").document(documentId).update(
+                    mapOf(
+                        "currentMileage" to newCurrentMileage,
+                        "addedMileage" to newAddedMileage,
+                    ),
                 ).addOnSuccessListener {
                     continuation.resume(Result.success(SuccessOrFailure.Success), null)
                 }.addOnFailureListener { e ->
