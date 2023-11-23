@@ -48,7 +48,7 @@ class DictionaryDetailDialog : DialogFragment() {
         val pokemon = dictionaryViewModel.myPokemonList.value?.find { it.id == pokemonId }
 
         pokemon?.let {
-            Glide.with(requireActivity()).load(it.imageOfficial).into(binding.pokemonImage)
+            Glide.with(this).load(it.imageOfficial).into(binding.pokemonImage)
             binding.number.text = "no.${pokemon.id}"
             binding.pokemonName.text = it.nameKorean
             binding.type1.text = it.type[0]

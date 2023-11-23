@@ -45,6 +45,7 @@ class HealthDataSource @Inject constructor() {
                 .readData(readRequest)
                 .addOnSuccessListener { response ->
                     var stepCount = 0
+                    Log.d(TAG, "fetchStepCount() called with: response = ${response.buckets}")
                     if (response.buckets[0].dataSets[0].dataPoints.size > 0) {
                         stepCount = response.buckets[0].dataSets[0].dataPoints[0].getValue(
                             Field.FIELD_STEPS,

@@ -52,15 +52,20 @@ class DrawDialog : DialogFragment() {
         binding.message.text = "1000 마일리지를 소모하여 뽑기를 진행하시겠습니까?"
 
         binding.cancelButton.setOnClickListener {
-            findNavController().navigate(R.id.home, null)
+            findNavController().navigateUp()
         }
+
         binding.confirmButton.setOnClickListener {
             if ((mainViewModel.currentMileage.value ?: 0) < 1000) {
                 CustomToast.createAndShow(requireActivity(), "마일리지가 부족합니다").show()
                 this@DrawDialog.dismiss()
                 return@setOnClickListener
             }
-            val newPokemonId = getNewPokemonId()
+            val newPokemonId = dictionaryViewModel.getNewPokemonId()
+            if (newPokemonId < 1) {
+                CustomToast.createAndShow(requireActivity(), "문제가 발생했습니다. 다시 시도해주세요!").show()
+                return@setOnClickListener
+            }
             val nowSet = mainViewModel.myPokemonSet.value ?: mutableSetOf()
             if (nowSet.contains(newPokemonId)) {
                 duplication = true
@@ -87,14 +92,6 @@ class DrawDialog : DialogFragment() {
                 }
             }
         }
-    }
-
-    private fun getNewPokemonId(): Int {
-        /* TODO
-            1. firebase data에서 percentage 조정해서 저장해놓기
-            2. 도감 데이터 받아와서 로컬에 저장해놓은 거에서 퍼센티지 받아오기
-         */
-        return Random.nextInt(1, 152)
     }
 
     override fun onDestroyView() {

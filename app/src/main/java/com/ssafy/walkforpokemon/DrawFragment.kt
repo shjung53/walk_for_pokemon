@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -37,6 +38,16 @@ class DrawFragment() : Fragment() {
 
     private var duplication = false
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val callback: OnBackPressedCallback =
+            object : OnBackPressedCallback(true /* enabled by default */) {
+                override fun handleOnBackPressed() {
+                    // Handle the back button event
+                }
+            }
+        requireActivity().onBackPressedDispatcher.addCallback(this, callback)
+    }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -80,12 +91,12 @@ class DrawFragment() : Fragment() {
                 binding.type2.setBackgroundResource(type2Color)
             }
 
-            Glide.with(requireActivity()).load(it.imageOfficial)
+            Glide.with(this).load(it.imageOfficial)
                 .into(binding.pokemonImage)
         }
 
         binding.confirmButton.setOnClickListener {
-            findNavController().navigate(R.id.home, null)
+            findNavController().navigate(R.id.action_drawFragment_to_home3, null)
         }
     }
 
@@ -94,7 +105,7 @@ class DrawFragment() : Fragment() {
         requestOptions.skipMemoryCache(false)
         requestOptions.signature(ObjectKey(System.currentTimeMillis()))
 
-        Glide.with(requireActivity()).load(R.raw.pokeball_open_temp_slow)
+        Glide.with(this).load(R.raw.pokeball_open_temp_slow)
             .addListener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(
                     e: GlideException?,
@@ -116,7 +127,7 @@ class DrawFragment() : Fragment() {
                     resource.registerAnimationCallback(object :
                         Animatable2Compat.AnimationCallback() {
                         override fun onAnimationEnd(drawable: Drawable?) {
-                            Glide.with(requireActivity()).clear(binding.drawGif)
+                            Glide.with(this@DrawFragment).clear(binding.drawGif)
                             binding.drawGif.visibility = View.GONE
                             super.onAnimationEnd(drawable)
                         }

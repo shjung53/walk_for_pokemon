@@ -5,11 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ssafy.walkforpokemon.PokemonRarityUtil
 import com.ssafy.walkforpokemon.data.dataclass.Pokemon
 import com.ssafy.walkforpokemon.domain.pokemon.InitPokemonListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.random.Random
 
 @HiltViewModel
 class DictionaryViewModel @Inject constructor(
@@ -35,6 +37,10 @@ class DictionaryViewModel @Inject constructor(
                 onSuccess = {
                     _pokemonList.value = it
                     state["pokemonList"] = _pokemonList.value
+                    it.forEach { pokemon ->
+                        val grade = PokemonRarityUtil.getGrade(pokemon.percentage)
+                        PokemonRarityUtil.putInGradeList(pokemon.id, grade)
+                    }
                 },
                 onFailure = {},
             )
@@ -52,5 +58,15 @@ class DictionaryViewModel @Inject constructor(
             _myPokemonList.value = newPokemonList
             state["myPokemonList"] = _myPokemonList.value
         }
+    }
+
+    fun getNewPokemonId(): Int {
+        val grade = PokemonRarityUtil.drawGrade()
+        val gradeList = PokemonRarityUtil.getList(grade)
+        val listSize = gradeList.size
+
+        val selectedItemIndex = (Random.nextDouble() * listSize).toInt()
+
+        return gradeList[selectedItemIndex]
     }
 }

@@ -41,7 +41,7 @@ class HomeFragment : Fragment() {
         mainViewModel.mainPokemon.observe(requireActivity()) { mainPokemonId ->
             dictionaryViewModel.pokemonList.value?.let { it ->
                 val mainPokemonImage = it.find { pokemon -> mainPokemonId == pokemon.id }?.image3D
-                Glide.with(requireActivity()).load(
+                Glide.with(this).load(
                     mainPokemonImage,
                 ).into(binding.mainPokemonImage)
             }
@@ -76,7 +76,7 @@ class HomeFragment : Fragment() {
         val navController = findNavController()
 
         binding.drawBtn.setOnClickListener {
-            navController.navigate(R.id.drawDialog)
+            navController.navigate(R.id.action_home_to_drawDialog3)
         }
 
         val dictionaryTransitionOption = NavOptions.Builder()
@@ -85,11 +85,14 @@ class HomeFragment : Fragment() {
             .setExitAnim(R.anim.stay)
             .setPopExitAnim(R.anim.slide_out_down)
             .setExitAnim(R.anim.stay)
-            .setPopUpTo(navController.graph.startDestinationId, false)
             .build()
 
         binding.dictionaryBtn.setOnClickListener {
-            findNavController().navigate(R.id.dictionary, null, dictionaryTransitionOption)
+            findNavController().navigate(
+                R.id.action_home_to_dictionary,
+                null,
+                dictionaryTransitionOption,
+            )
         }
     }
 
