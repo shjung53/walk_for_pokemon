@@ -7,6 +7,7 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import com.ssafy.walkforpokemon.AddPokemonException
 import com.ssafy.walkforpokemon.MileageException
 import com.ssafy.walkforpokemon.SuccessOrFailure
 import com.ssafy.walkforpokemon.domain.health.AddMileageUseCase
@@ -124,7 +125,7 @@ class MainViewModel @Inject constructor(
                 state["currentMileage"] = _currentMileage.value
                 addNewPokemon(newPokemonId).fold(
                     onSuccess = { return Result.success(it) },
-                    onFailure = { return Result.failure(it) },
+                    onFailure = { return Result.failure(AddPokemonException("failToAdd")) },
                 )
             },
             onFailure = { return Result.failure(it) },
@@ -132,9 +133,9 @@ class MainViewModel @Inject constructor(
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private suspend fun addNewPokemon(newPokemonId: Int): Result<SuccessOrFailure> {
+    suspend fun addNewPokemon(newPokemonId: Int): Result<SuccessOrFailure> {
         drawPokemonUseCase.invoke(userId, newPokemonId).fold(
-            onSuccess = {
+            onSuccess = { it ->
                 val newPokemonSet = mutableSetOf<Int>()
                 myPokemonSet.value?.let {
                     newPokemonSet.addAll(it)

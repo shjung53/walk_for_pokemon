@@ -68,29 +68,51 @@ class DrawDialog : DialogFragment(), LoadingView {
             CoroutineScope(Dispatchers.Main).launch {
                 mainViewModel.drawPokemon(newPokemonId, duplication).fold(
                     onSuccess = {
-                        dictionaryViewModel.updateUserPokemonList(
-                            mainViewModel.mainPokemon.value ?: -1,
-                            mainViewModel.myPokemonSet.value ?: mutableSetOf(),
-                        )
-                        val action = DrawDialogDirections.actionDrawDialogToDrawFragment(
-                            newPokemonId,
-                            duplication,
-                        )
-                        hideLoading()
-                        if (mainViewModel.myPokemonSet.value?.contains(newPokemonId) == true) {
-                            findNavController().navigate(action)
-                        } else {
-                            mainViewModel.myPokemonSet.value?.add(newPokemonId)
-                            findNavController().navigateUp()
-                        }
+                        onSuccessAddNewPokemon(newPokemonId)
                     },
                     onFailure = {
-                        hideLoading()
-                        CustomToast.createAndShow(requireActivity(), "문제가 발생했습니다. 잠시후 다시 시도해주세요")
-                        findNavController().navigateUp()
+                        if (it.message == "failToAdd") {
+                            onFailAddNewPokemon(newPokemonId)
+                        } else {
+                            onFailDraw()
+                        }
                     },
                 )
             }
+        }
+    }
+
+    private fun onFailDraw() {
+        hideLoading()
+        CustomToast.createAndShow(requireActivity(), "문제가 발생했습니다. 잠시후 다시 시도해주세요")
+        findNavController().navigateUp()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private suspend fun onFailAddNewPokemon(newPokemonId: Int) {
+        mainViewModel.addNewPokemon(newPokemonId).fold(
+            onSuccess = { onSuccessAddNewPokemon(newPokemonId) },
+            onFailure = {
+                onFailDraw()
+            },
+        )
+    }
+
+    private fun onSuccessAddNewPokemon(newPokemonId: Int) {
+        dictionaryViewModel.updateUserPokemonList(
+            mainViewModel.mainPokemon.value ?: -1,
+            mainViewModel.myPokemonSet.value ?: mutableSetOf(),
+        )
+        val action = DrawDialogDirections.actionDrawDialogToDrawFragment(
+            newPokemonId,
+            duplication,
+        )
+        hideLoading()
+        if (mainViewModel.myPokemonSet.value?.contains(newPokemonId) == true) {
+            findNavController().navigate(action)
+        } else {
+            mainViewModel.myPokemonSet.value?.add(newPokemonId)
+            findNavController().navigateUp()
         }
     }
 
