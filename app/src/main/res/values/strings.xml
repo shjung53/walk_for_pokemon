@@ -5,4 +5,6 @@
     <string name="app_name1">&#160;walk for&#160;</string>
     <string name="app_name2">&#160;pokemon&#160;\n</string>
     <string name="google_login_client_id">57075546142-kfpv4pdcfc2mgsgv0ueprlfbonmu9j4q.apps.googleusercontent.com</string>
+    <string name="fail_refresh_step_count">걸음 수를 가져오는데 실패했습니다.\n새로고침하여 다시 시도해주세요</string>
+    <string name="draw_message">1000 마일리지를 소모하여 뽑기를 진행하시겠습니까?</string>
 </resources>

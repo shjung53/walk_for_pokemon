@@ -30,6 +30,7 @@
             android:layout_marginStart="12dp"
             android:layout_marginEnd="20dp"
             style="@style/samaco_20sp"
+            android:paddingVertical="4dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/iamge"

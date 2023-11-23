@@ -54,9 +54,10 @@ class HealthDataSource @Inject constructor() {
                     continuation.resume(Result.success(stepCount), null)
                     // Use response data here
                 }
-                .addOnFailureListener({ e ->
+                .addOnFailureListener { e ->
+                    continuation.resume(Result.failure(e), null)
                     Log.d(TAG, "fetchStepCount() called with: e = $e")
-                })
+                }
         }
 
         return result

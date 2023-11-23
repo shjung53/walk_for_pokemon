@@ -1,8 +1,7 @@
-package com.ssafy.walkforpokemon
-
+package com.ssafy.walkforpokemon.util
 
 enum class PokemonType constructor(val english: String, val Korean: String) {
-    Normal("normal", "노말") ,
+    Normal("normal", "노말"),
     Fire("fire", "불꽃"),
     Water("water", "물"),
     Electric("electric", "전기"),
@@ -19,7 +18,7 @@ enum class PokemonType constructor(val english: String, val Korean: String) {
     Dragon("dragon", "드래곤"),
     Dark("dark", "악"),
     Steel("steel", "강철"),
-    Fairy("fairy", "페어리")
+    Fairy("fairy", "페어리"),
 }
 
 object TypeTranslator {
@@ -29,18 +28,18 @@ object TypeTranslator {
             "fire" -> PokemonType.Fire
             "water" -> PokemonType.Water
             "electric" -> PokemonType.Electric
-            "grass" ->PokemonType.Grass
+            "grass" -> PokemonType.Grass
             "ice" -> PokemonType.Ice
             "fighting" -> PokemonType.Fighting
-            "poison" ->PokemonType.Poison
-            "ground" ->PokemonType.Ground
+            "poison" -> PokemonType.Poison
+            "ground" -> PokemonType.Ground
             "flying" -> PokemonType.Flying
             "psychic" -> PokemonType.Psychic
             "bug" -> PokemonType.Bug
             "rock" -> PokemonType.Rock
             "ghost" -> PokemonType.Ghost
             "dragon" -> PokemonType.Dragon
-            "dark" ->PokemonType.Dark
+            "dark" -> PokemonType.Dark
             "steel" -> PokemonType.Steel
             "fairy" -> PokemonType.Fairy
             else -> PokemonType.Normal

@@ -1,4 +1,4 @@
-package com.ssafy.walkforpokemon
+package com.ssafy.walkforpokemon.util
 
 import android.content.Context
 import android.view.Gravity
@@ -7,7 +7,7 @@ import android.widget.Toast
 import com.ssafy.walkforpokemon.databinding.ToastCustomBinding
 
 object CustomToast {
-    fun createAndShow(context: Context, message: String): Toast {
+    fun createAndShow(context: Context, message: String) {
         val binding: ToastCustomBinding =
             ToastCustomBinding.inflate(LayoutInflater.from(context), null, false)
 
@@ -17,6 +17,6 @@ object CustomToast {
             setGravity(Gravity.BOTTOM or Gravity.CENTER, 0, 80)
             duration = Toast.LENGTH_SHORT
             view = binding.root
-        }
+        }.show()
     }
 }

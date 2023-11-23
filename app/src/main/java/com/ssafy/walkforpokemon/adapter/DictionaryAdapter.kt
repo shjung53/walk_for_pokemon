@@ -32,6 +32,7 @@ class DictionaryAdapter(private val context: Context, private var itemList: List
             binding.number.text = "no.${data.id}"
             binding.name.text = data.nameKorean
             Glide.with(context).load(data.imageOfficial).diskCacheStrategy(DiskCacheStrategy.ALL)
+                .override(225, 225)
                 .into(binding.image)
             val typeColor = context.resources.getIdentifier(
                 "type_${data.type[0]}",
@@ -70,7 +71,6 @@ class DictionaryAdapter(private val context: Context, private var itemList: List
 
     override fun onBindViewHolder(holder: DictionaryAdapter.DictionaryViewHolder, position: Int) {
         holder.bind(itemList[position])
-        Glide.with(context).load(itemList).preload()
     }
 
     fun setDataList(newItemList: List<Pokemon>) {

@@ -1,4 +1,4 @@
-package com.ssafy.walkforpokemon
+package com.ssafy.walkforpokemon.ui
 
 import android.app.ActivityOptions
 import android.content.Intent
@@ -11,14 +11,17 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.ssafy.walkforpokemon.databinding.ActivityLoginBinding
+import com.ssafy.walkforpokemon.dialogs.LoadingDialog
+import com.ssafy.walkforpokemon.dialogs.LoadingView
 import dagger.hilt.android.AndroidEntryPoint
 
 private const val TAG = "LoginActivity"
 
 @AndroidEntryPoint
-class LoginActivity : AppCompatActivity() {
+class LoginActivity() : AppCompatActivity(), LoadingView {
 
     private lateinit var binding: ActivityLoginBinding
+    private lateinit var loadingDialog: LoadingDialog
 
     // Google Sign In API와 호출할 구글 로그인 클라이언트
     private val googleSignInClient: GoogleSignInClient by lazy { getGoogleClient() }
@@ -48,7 +51,10 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        loadingDialog = LoadingDialog(this)
+
         binding.googleLoginBtn.setOnClickListener {
+            showLoading()
             requestGoogleLogin()
         }
 
@@ -79,5 +85,17 @@ class LoginActivity : AppCompatActivity() {
             .build()
 
         return GoogleSignIn.getClient(this, googleSignInOption)
+    }
+
+    override fun showLoading() {
+        if (!loadingDialog.isShowing) {
+            loadingDialog.show()
+        }
+    }
+
+    override fun hideLoading() {
+        if (loadingDialog.isShowing) {
+            loadingDialog.dismiss()
+        }
     }
 }

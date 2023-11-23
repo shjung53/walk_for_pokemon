@@ -1,4 +1,4 @@
-package com.ssafy.walkforpokemon
+package com.ssafy.walkforpokemon.ui
 
 import android.animation.Animator
 import android.animation.ObjectAnimator
@@ -22,7 +22,11 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.signature.ObjectKey
+import com.ssafy.walkforpokemon.R
 import com.ssafy.walkforpokemon.databinding.FragmentDrawBinding
+import com.ssafy.walkforpokemon.util.CustomToast
+import com.ssafy.walkforpokemon.util.PokemonType
+import com.ssafy.walkforpokemon.util.TypeTranslator
 import com.ssafy.walkforpokemon.viewmodels.DictionaryViewModel
 
 class DrawFragment() : Fragment() {
@@ -107,10 +111,12 @@ class DrawFragment() : Fragment() {
                 PokemonType.Psychic -> R.drawable.psychic_background
                 PokemonType.Flying, PokemonType.Dragon -> R.drawable.flying_dragon_background
                 PokemonType.Ghost, PokemonType.Dark -> R.drawable.ghost_dark_background
-                PokemonType.Normal, PokemonType.Grass, PokemonType.Bug -> R.drawable.normal_grass_bug_background
-                PokemonType.Ground, PokemonType.Rock, PokemonType.Steel, PokemonType.Fighting -> R.drawable.ground_rock_steel_fighting_background
+                PokemonType.Normal, PokemonType.Grass, PokemonType.Bug,
+                -> R.drawable.normal_grass_bug_background
+                PokemonType.Ground, PokemonType.Rock,
+                PokemonType.Steel, PokemonType.Fighting,
+                -> R.drawable.ground_rock_steel_fighting_background
             }
-
         }
 
         binding.confirmButton.setOnClickListener {
@@ -189,7 +195,7 @@ class DrawFragment() : Fragment() {
                     CustomToast.createAndShow(
                         requireActivity(),
                         "이미 존재하는 포켓몬은 200마일리지로 전환됩니다!",
-                    ).show()
+                    )
                 }
             }
 

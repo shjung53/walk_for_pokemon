@@ -1,17 +1,19 @@
 package com.ssafy.walkforpokemon.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.ssafy.walkforpokemon.PokemonRarityUtil
+import com.ssafy.walkforpokemon.SuccessOrFailure
 import com.ssafy.walkforpokemon.data.dataclass.Pokemon
 import com.ssafy.walkforpokemon.domain.pokemon.InitPokemonListUseCase
+import com.ssafy.walkforpokemon.util.PokemonRarityUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.random.Random
+
+private const val TAG = "DictionaryViewModel"
 
 @HiltViewModel
 class DictionaryViewModel @Inject constructor(
@@ -31,20 +33,22 @@ class DictionaryViewModel @Inject constructor(
         _myPokemonList.value = state["myPokemonList"] ?: emptyList()
     }
 
-    fun initPokemonList() {
-        viewModelScope.launch {
-            initPokemonListUseCase.invoke().fold(
-                onSuccess = {
-                    _pokemonList.value = it
-                    state["pokemonList"] = _pokemonList.value
-                    it.forEach { pokemon ->
-                        val grade = PokemonRarityUtil.getGrade(pokemon.percentage)
-                        PokemonRarityUtil.putInGradeList(pokemon.id, grade)
-                    }
-                },
-                onFailure = {},
-            )
-        }
+    suspend fun initPokemonList(): Result<SuccessOrFailure> {
+        initPokemonListUseCase.invoke().fold(
+            onSuccess = {
+                Log.d(TAG, "initPokemonList() called $it")
+                _pokemonList.value = it
+                state["pokemonList"] = _pokemonList.value
+                it.forEach { pokemon ->
+                    val grade = PokemonRarityUtil.getGrade(pokemon.percentage)
+                    PokemonRarityUtil.putInGradeList(pokemon.id, grade)
+                }
+                return Result.success(SuccessOrFailure.Success)
+            },
+            onFailure = {
+                return Result.failure(it)
+            },
+        )
     }
 
     fun updateUserPokemonList(mainPokemonId: Int, userPokemonSet: MutableSet<Int>) {

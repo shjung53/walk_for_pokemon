@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/drawFragment"
-        android:name="com.ssafy.walkforpokemon.DrawFragment"
+        android:name="com.ssafy.walkforpokemon.ui.DrawFragment"
         android:label="fragment_bottom0"
         tools:layout="@layout/fragment_draw">
         <argument
@@ -37,7 +37,7 @@
 
     <fragment
         android:id="@+id/home"
-        android:name="com.ssafy.walkforpokemon.HomeFragment"
+        android:name="com.ssafy.walkforpokemon.ui.HomeFragment"
         android:label="fragment_bottom1"
         tools:layout="@layout/fragment_home">
         <action
@@ -53,7 +53,7 @@
     </fragment>
     <fragment
         android:id="@+id/dictionary"
-        android:name="com.ssafy.walkforpokemon.DictionaryFragment"
+        android:name="com.ssafy.walkforpokemon.ui.DictionaryFragment"
         android:label="fragment_bottom2"
         tools:layout="@layout/fragment_dictionary">
         <action

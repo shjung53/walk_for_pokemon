@@ -12,27 +12,31 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
-import com.ssafy.walkforpokemon.CustomToast
-import com.ssafy.walkforpokemon.DrawFragmentArgs
 import com.ssafy.walkforpokemon.R
 import com.ssafy.walkforpokemon.data.dataclass.Pokemon
 import com.ssafy.walkforpokemon.databinding.DialogDictionaryDetailBinding
+import com.ssafy.walkforpokemon.ui.DrawFragmentArgs
+import com.ssafy.walkforpokemon.util.CustomToast
 import com.ssafy.walkforpokemon.viewmodels.DictionaryViewModel
 import com.ssafy.walkforpokemon.viewmodels.MainViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class DictionaryDetailDialog : DialogFragment() {
+class DictionaryDetailDialog : DialogFragment(), LoadingView {
 
     private var _binding: DialogDictionaryDetailBinding? = null
     private val binding: DialogDictionaryDetailBinding get() = _binding!!
     private val dictionaryViewModel: DictionaryViewModel by activityViewModels()
     private val mainViewModel: MainViewModel by activityViewModels()
 
+    private lateinit var loadingDialog: LoadingDialog
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NORMAL, R.style.FullScreenDialog)
+
+        loadingDialog = LoadingDialog(requireContext())
     }
 
     override fun onCreateView(
@@ -76,16 +80,23 @@ class DictionaryDetailDialog : DialogFragment() {
             this.dismiss()
         }
 
-        binding.setMainPokemonButton.setOnClickListener {
+        binding.setMainPokemonButton.setOnClickListener { button ->
+            button.isClickable = false
+            showLoading()
             CoroutineScope(Dispatchers.Main).launch {
                 mainViewModel.updateMainPokemon(pokemonId).fold(
-                    onSuccess = { findNavController().navigateUp() },
+                    onSuccess = {
+                        hideLoading()
+                        findNavController().navigateUp()
+                    },
                     onFailure = {
+                        hideLoading()
                         CustomToast.createAndShow(
                             requireActivity(),
-                            "대표 포켓몬 등록에 실패했습니다. 다시 시도해주세요!"
+                            "대표 포켓몬 등록에 실패했습니다. 다시 시도해주세요!",
                         )
-                    }
+                        button.isClickable = true
+                    },
                 )
             }
         }
@@ -126,5 +137,17 @@ class DictionaryDetailDialog : DialogFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun showLoading() {
+        if (!loadingDialog.isShowing) {
+            loadingDialog.show()
+        }
+    }
+
+    override fun hideLoading() {
+        if (loadingDialog.isShowing) {
+            loadingDialog.dismiss()
+        }
     }
 }

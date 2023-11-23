@@ -1,4 +1,4 @@
-package com.ssafy.walkforpokemon
+package com.ssafy.walkforpokemon.util
 
 import kotlin.random.Random
 

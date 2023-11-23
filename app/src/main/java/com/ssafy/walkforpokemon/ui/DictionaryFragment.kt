@@ -1,4 +1,4 @@
-package com.ssafy.walkforpokemon
+package com.ssafy.walkforpokemon.ui
 
 import android.os.Bundle
 import android.text.Spannable
@@ -10,9 +10,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.ssafy.walkforpokemon.R
 import com.ssafy.walkforpokemon.adapter.DictionaryAdapter
 import com.ssafy.walkforpokemon.data.dataclass.Pokemon
 import com.ssafy.walkforpokemon.databinding.FragmentDictionaryBinding
+import com.ssafy.walkforpokemon.util.CustomToast
 import com.ssafy.walkforpokemon.viewmodels.DictionaryViewModel
 import com.ssafy.walkforpokemon.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -43,7 +47,8 @@ class DictionaryFragment : Fragment() {
         setAchievementText()
 
         dictionaryViewModel.myPokemonList.observe(requireActivity()) {
-            dictionaryAdapter.setDataList(it)
+            if (_binding != null) setAchievementText()
+            if (it.isNotEmpty()) dictionaryAdapter.setDataList(it.subList(0, 30))
         }
 
         binding.closeButton.setOnClickListener {
@@ -82,11 +87,32 @@ class DictionaryFragment : Fragment() {
         dictionaryAdapter.setOnItemClickListener(object : DictionaryAdapter.OnItemClickListener {
             override fun onClick(pokemon: Pokemon) {
                 if (!pokemon.isActive) {
-                    CustomToast.createAndShow(requireActivity(), "아직 얻지 못한 포켓몬입니다!").show()
+                    CustomToast.createAndShow(requireActivity(), "아직 얻지 못한 포켓몬입니다!")
                 } else {
                     val action =
                         DictionaryFragmentDirections.actionDictionaryToDictionaryDetail(pokemon.id)
                     findNavController().navigate(action)
+                }
+            }
+        })
+
+        binding.recyclerview.itemAnimator = null
+
+        binding.recyclerview.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val lastVisibleItemPosition =
+                    (recyclerView.layoutManager as LinearLayoutManager?)!!.findLastCompletelyVisibleItemPosition()
+                val itemTotalCount = recyclerView.adapter?.itemCount ?: 0
+                if (lastVisibleItemPosition >= itemTotalCount - 1) {
+                    dictionaryViewModel.myPokemonList.value?.let {
+                        val endIndex = if (itemTotalCount + 30 > it.lastIndex) {
+                            151
+                        } else {
+                            itemTotalCount + 30
+                        }
+                        dictionaryAdapter.setDataList(it.subList(0, endIndex))
+                    }
                 }
             }
         })

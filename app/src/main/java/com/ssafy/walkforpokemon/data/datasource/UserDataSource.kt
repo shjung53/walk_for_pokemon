@@ -7,6 +7,7 @@ import com.google.firebase.ktx.Firebase
 import com.navercorp.nid.oauth.NidOAuthPreferencesManager.errorDescription
 import com.ssafy.walkforpokemon.SuccessOrFailure
 import com.ssafy.walkforpokemon.data.dataclass.User
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
@@ -82,27 +83,33 @@ class UserDataSource @Inject constructor() {
                 }
             }.await()
 
-        val result = suspendCancellableCoroutine { continuation ->
-            Firebase.firestore.collection("user").document(documentId).update(
-                "myPokemons",
-                FieldValue.arrayUnion(pokemonId),
-            ).addOnSuccessListener {
-                continuation.resume(Result.success(SuccessOrFailure.Success), null)
-            }.addOnFailureListener { e ->
-                continuation.resume(
-                    Result.failure(
-                        Exception(
-                            errorDescription ?: "unknown error",
+        try {
+            val result = suspendCancellableCoroutine { continuation ->
+                Firebase.firestore.collection("user").document(documentId).update(
+                    "myPokemons",
+                    FieldValue.arrayUnion(pokemonId),
+                ).addOnSuccessListener {
+                    continuation.resume(Result.success(SuccessOrFailure.Success), null)
+                }.addOnFailureListener { e ->
+                    continuation.resume(
+                        Result.failure(
+                            Exception(
+                                errorDescription ?: "unknown error",
+                            ),
                         ),
-                    ),
-                    null,
-                )
-                Log.d(TAG, "updateUserPokemonList() called with: e = $e")
+                        null,
+                    )
+                    Log.d(TAG, "updateUserPokemonList() called with: e = $e")
+                }
             }
+            return result
+        } catch (e: Exception) {
+            Log.d(TAG, "addPokemonToUser() called with: userId = $userId, pokemonId = $pokemonId")
+            return Result.failure(e)
         }
-        return result
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     suspend fun updateMainPokemon(
         userId: String,
         pokemonId: Int,
@@ -115,29 +122,34 @@ class UserDataSource @Inject constructor() {
                 }
             }.await()
 
-        val result = suspendCancellableCoroutine { continuation ->
-            Firebase.firestore.collection("user").document(documentId).update(
-                "mainPokemon",
-                pokemonId,
-            ).addOnSuccessListener { documentReference ->
-                continuation.resume(Result.success(SuccessOrFailure.Success), null)
-                Log.d(
-                    TAG,
-                    "updateMainPokemon() called with: documentReference = $documentReference",
-                )
-            }.addOnFailureListener { e ->
-                continuation.resume(
-                    Result.failure(
-                        Exception(
-                            errorDescription ?: "unknown error",
+        try {
+            val result = suspendCancellableCoroutine { continuation ->
+                Firebase.firestore.collection("user").document(documentId).update(
+                    "mainPokemon",
+                    pokemonId,
+                ).addOnSuccessListener { documentReference ->
+                    continuation.resume(Result.success(SuccessOrFailure.Success), null)
+                    Log.d(
+                        TAG,
+                        "updateMainPokemon() called with: documentReference = $documentReference",
+                    )
+                }.addOnFailureListener { e ->
+                    continuation.resume(
+                        Result.failure(
+                            Exception(
+                                errorDescription ?: "unknown error",
+                            ),
                         ),
-                    ),
-                    null,
-                )
-                Log.d(TAG, "updateMainPokemon() called with: e = $e")
+                        null,
+                    )
+                    Log.d(TAG, "updateMainPokemon() called with: e = $e")
+                }
             }
+            return result
+        } catch (e: Exception) {
+            Log.d(TAG, "updateMainPokemon() called with: userId = $userId, pokemonId = $pokemonId")
+            return Result.failure(e)
         }
-        return result
     }
 
     suspend fun updateMileageUseCase(
@@ -175,7 +187,7 @@ class UserDataSource @Inject constructor() {
         } catch (e: Exception) {
             Log.d(
                 TAG,
-                "updateMileageUseCase() called with: userId = $userId, newCurrentMileage = $newCurrentMileage"
+                "updateMileageUseCase() called with: userId = $userId, newCurrentMileage = $newCurrentMileage",
             )
             return Result.failure(e)
         }
