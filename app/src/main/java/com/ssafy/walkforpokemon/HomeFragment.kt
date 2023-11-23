@@ -41,7 +41,7 @@ class HomeFragment : Fragment() {
         mainViewModel.mainPokemon.observe(requireActivity()) { mainPokemonId ->
             dictionaryViewModel.pokemonList.value?.let { it ->
                 val mainPokemonImage = it.find { pokemon -> mainPokemonId == pokemon.id }?.image3D
-                Glide.with(this).load(
+                if (_binding != null) Glide.with(this).load(
                     mainPokemonImage,
                 ).into(binding.mainPokemonImage)
             }
@@ -94,6 +94,11 @@ class HomeFragment : Fragment() {
                 dictionaryTransitionOption,
             )
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     companion object {
